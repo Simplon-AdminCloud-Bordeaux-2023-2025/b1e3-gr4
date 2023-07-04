@@ -15,6 +15,7 @@ locals {
     "${local.prefixName}subnet-VM"      = "10.1.1.0/24"
     "${local.prefixName}subnet-3"       = "10.1.2.0/24"
   }
+  ssh_pub_key = file("~/.ssh/terraform_key.pub")
 }
 
 # Create virtual network

@@ -52,7 +52,7 @@ resource "azurerm_linux_virtual_machine" "bastion" {
   }
   admin_ssh_key {
     username   = "nabila"
-    public_key = file("~/.ssh/terraform_key.pub")
+    public_key = ${local.ssh_pub_key}
   }
 }
 
@@ -112,6 +112,6 @@ resource "azurerm_linux_virtual_machine" "app" {
   }
   admin_ssh_key {
     username   = "nabila"
-    public_key = file("~/.ssh/terraform_key.pub")
+    public_key = ${local.ssh_pub_key}
   }
 }
