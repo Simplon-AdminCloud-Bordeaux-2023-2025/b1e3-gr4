@@ -2,6 +2,12 @@ data "azurerm_resource_group" "rg" {
   name = "Nabila_R"
 }
 
+resource "random_string" "random" {
+  length           = 5
+  special          = false
+  min_lower = 5
+}
+
 locals {
   ipSpace    = ["10.1.0.0/16"]
   prefixName = "nab-"
