@@ -24,7 +24,7 @@ resource "azurerm_key_vault_access_policy" "terraform_user" {
 resource "azurerm_key_vault_secret" "ssh_public_key" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = "ssh-public"
-  value        = ${local.ssh_pub_key}
+  value        = local.ssh_pub_key
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
 }
 

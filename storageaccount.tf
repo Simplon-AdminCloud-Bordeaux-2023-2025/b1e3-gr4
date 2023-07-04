@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "staccount" {
-  name                = "nabsmb${random_string.random.result}""
+  name                = "nabsmb${random_string.random.result}"
   resource_group_name = data.azurerm_resource_group.rg.name
 
   location                 = data.azurerm_resource_group.rg.location
@@ -7,8 +7,8 @@ resource "azurerm_storage_account" "staccount" {
   account_replication_type = "LRS"
 
   network_rules {
-    default_action             = "Allow"
-    ip_rules                   = [azurerm_public_ip.ipApp.ip_address]
+    default_action = "Allow"
+    ip_rules       = [azurerm_public_ip.ipApp.ip_address]
   }
 }
 

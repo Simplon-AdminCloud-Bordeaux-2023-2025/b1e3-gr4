@@ -1,10 +1,10 @@
 # Create Bastion public IP
 resource "azurerm_public_ip" "ipBastion" {
-  name                         = "${local.prefixName}ip-Bastion"
-  location                     = data.azurerm_resource_group.rg.location
-  resource_group_name          = data.azurerm_resource_group.rg.name
-  allocation_method = "Static"
-  domain_name_label            = "${local.prefixName}bastion"
+  name                = "${local.prefixName}ip-Bastion"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  domain_name_label   = "${local.prefixName}bastion"
 }
 
 #Create Bastion nic
@@ -18,7 +18,7 @@ resource "azurerm_network_interface" "nicBastion" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.Subnet["${local.prefixName}subnet-VM"].id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id   = azurerm_public_ip.ipBastion.id
+    public_ip_address_id          = azurerm_public_ip.ipBastion.id
   }
 }
 
@@ -34,7 +34,7 @@ resource "azurerm_linux_virtual_machine" "bastion" {
   name                  = "${local.prefixName}vm-bastion"
   location              = data.azurerm_resource_group.rg.location
   resource_group_name   = data.azurerm_resource_group.rg.name
-  admin_username = "nabila"
+  admin_username        = "nabila"
   size                  = "Standard_DS1_v2"
   network_interface_ids = [azurerm_network_interface.nicBastion.id]
 
@@ -52,7 +52,7 @@ resource "azurerm_linux_virtual_machine" "bastion" {
   }
   admin_ssh_key {
     username   = "nabila"
-    public_key = ${local.ssh_pub_key}
+    public_key = local.ssh_pub_key
   }
 }
 
@@ -60,11 +60,11 @@ resource "azurerm_linux_virtual_machine" "bastion" {
 
 # Create App public IP
 resource "azurerm_public_ip" "ipApp" {
-  name                         = "${local.prefixName}ip-App"
-  location                     = data.azurerm_resource_group.rg.location
-  resource_group_name          = data.azurerm_resource_group.rg.name
-  allocation_method = "Static"
-  domain_name_label            = "${local.prefixName}app"
+  name                = "${local.prefixName}ip-App"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  domain_name_label   = "${local.prefixName}app"
 }
 
 #Create App nic
@@ -78,7 +78,7 @@ resource "azurerm_network_interface" "nicApp" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.Subnet["${local.prefixName}subnet-VM"].id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id    = azurerm_public_ip.ipApp.id
+    public_ip_address_id          = azurerm_public_ip.ipApp.id
   }
 }
 
@@ -94,7 +94,7 @@ resource "azurerm_linux_virtual_machine" "app" {
   name                  = "${local.prefixName}vm-app"
   location              = data.azurerm_resource_group.rg.location
   resource_group_name   = data.azurerm_resource_group.rg.name
-  admin_username = "nabila"
+  admin_username        = "nabila"
   size                  = "Standard_DS1_v2"
   network_interface_ids = [azurerm_network_interface.nicApp.id]
 
@@ -112,6 +112,6 @@ resource "azurerm_linux_virtual_machine" "app" {
   }
   admin_ssh_key {
     username   = "nabila"
-    public_key = ${local.ssh_pub_key}
+    public_key = local.ssh_pub_key
   }
 }

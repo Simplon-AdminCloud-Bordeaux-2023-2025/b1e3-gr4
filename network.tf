@@ -3,8 +3,8 @@ data "azurerm_resource_group" "rg" {
 }
 
 resource "random_string" "random" {
-  length           = 5
-  special          = false
+  length    = 5
+  special   = false
   min_lower = 5
 }
 
@@ -12,8 +12,8 @@ locals {
   ipSpace    = ["10.1.0.0/16"]
   prefixName = "nab-"
   subnets = {
-    "${local.prefixName}subnet-VM"      = "10.1.1.0/24"
-    "${local.prefixName}subnet-3"       = "10.1.2.0/24"
+    "${local.prefixName}subnet-VM" = "10.1.1.0/24"
+    "${local.prefixName}subnet-3"  = "10.1.2.0/24"
   }
   ssh_pub_key = file("~/.ssh/terraform_key.pub")
 }
@@ -49,7 +49,7 @@ resource "azurerm_network_security_group" "nsgBastion" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "${data.external.adminipaddr.result.ip}"
+    source_address_prefix      = data.external.adminipaddr.result.ip
     destination_address_prefix = "*"
   }
 }
@@ -73,6 +73,18 @@ resource "azurerm_network_security_group" "nsgApp" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "HTTPS"
+    priority                   = 1000
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }

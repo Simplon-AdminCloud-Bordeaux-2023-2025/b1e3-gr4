@@ -5,9 +5,9 @@ resource "azurerm_mariadb_server" "dbserver" {
 
   administrator_login          = "mariadbadmin"
   administrator_login_password = "otarierouge0307!"
-  sku_name   = "GP_Gen5_2"
-  storage_mb = 5120
-  version    = "10.2"
+  sku_name                     = "GP_Gen5_2"
+  storage_mb                   = 5120
+  version                      = "10.2"
 
   auto_grow_enabled                = true
   backup_retention_days            = 7
