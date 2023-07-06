@@ -1,0 +1,25 @@
+---
+- name: "create wikijs directory"
+  command:
+    mkdir wiki
+
+- name: "download wikijs archive"
+  command:
+    wget https://github.com/Requarks/wiki/releases/latest/download/wiki-js.tar.gz
+
+- name: "uncompress wikijs archive"
+  command:
+    tar xzf wiki-js.tar.gz -C ./wiki
+
+- name: Copy file with new name
+  ansible.builtin.copy:
+    remote_src: true
+    src: "./wiki/config.sample.yml"
+    dest: "./wiki/config.yml"
+
+- name: Remove old file
+  ansible.builtin.file:
+    path: "./wiki/config.sample.yml"
+    state: absent
+
+
