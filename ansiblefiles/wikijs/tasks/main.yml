@@ -11,15 +11,26 @@
   command:
     tar xzf wiki-js.tar.gz -C ./wiki
 
-- name: Copy file with new name
+- name: "Copy file with new name"
   ansible.builtin.copy:
     remote_src: true
     src: "./wiki/config.sample.yml"
     dest: "./wiki/config.yml"
 
-- name: Remove old file
+- name: "Remove old file"
   ansible.builtin.file:
     path: "./wiki/config.sample.yml"
     state: absent
+
+- name: "Upgrade all apt packages"
+  apt: upgrade=dist
+
+- name: "Install nodejs"
+  apt:
+    name: nodejs
+    state: present
+
+    
+
 
 
