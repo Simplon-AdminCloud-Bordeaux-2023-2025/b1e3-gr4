@@ -34,7 +34,7 @@ resource "azurerm_linux_virtual_machine" "bastion" {
   name                  = "${local.prefixName}vm-bastion"
   location              = data.azurerm_resource_group.rg.location
   resource_group_name   = data.azurerm_resource_group.rg.name
-  admin_username        = ${local.user}
+  admin_username        = local.user
   size                  = "Standard_DS1_v2"
   network_interface_ids = [azurerm_network_interface.nicBastion.id]
 
@@ -51,7 +51,7 @@ resource "azurerm_linux_virtual_machine" "bastion" {
     version   = "latest"
   }
   admin_ssh_key {
-    username   = ${local.user}
+    username   = local.user
     public_key = local.ssh_pub_key
   }
 }
@@ -94,7 +94,7 @@ resource "azurerm_linux_virtual_machine" "app" {
   name                  = "${local.prefixName}vm-app"
   location              = data.azurerm_resource_group.rg.location
   resource_group_name   = data.azurerm_resource_group.rg.name
-  admin_username        = ${local.user}
+  admin_username        = local.user
   size                  = "Standard_DS1_v2"
   network_interface_ids = [azurerm_network_interface.nicApp.id]
 
@@ -111,7 +111,7 @@ resource "azurerm_linux_virtual_machine" "app" {
     version   = "latest"
   }
   admin_ssh_key {
-    username   = ${local.user}
+    username   = local.user
     public_key = local.ssh_pub_key
   }
 }
