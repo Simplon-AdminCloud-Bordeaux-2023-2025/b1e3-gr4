@@ -1,5 +1,5 @@
 data "azurerm_resource_group" "rg" {
-  name = "Nabila_R"
+  name = "b1e3-gr4"
 }
 
 resource "random_string" "random" {
@@ -13,9 +13,9 @@ locals {
   prefixName = "nab-"
   subnets = {
     "${local.prefixName}subnet-VM" = "10.1.1.0/24"
-    "${local.prefixName}subnet-3"  = "10.1.2.0/24"
   }
   ssh_pub_key = file("~/.ssh/terraform_key.pub")
+  user = "nabila"
 }
 
 # Create virtual network

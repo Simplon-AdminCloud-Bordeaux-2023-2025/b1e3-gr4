@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "staccount" {
-  name                = "nabsmb${random_string.random.result}"
+  name                = "smb${random_string.random.result}"
   resource_group_name = data.azurerm_resource_group.rg.name
 
   location                 = data.azurerm_resource_group.rg.location

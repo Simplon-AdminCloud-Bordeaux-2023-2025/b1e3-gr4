@@ -8,8 +8,6 @@ resource "random_password" "dbpass" {
   override_special = "!()-_=+[]{}<>:?"
 }
 
-
-
 resource "azurerm_mariadb_server" "dbserver" {
   name                = "${local.prefixName}mariadb-server"
   location            = data.azurerm_resource_group.rg.location
