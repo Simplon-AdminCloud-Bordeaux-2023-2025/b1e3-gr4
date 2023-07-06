@@ -5,7 +5,7 @@ resource "random_password" "dbpass" {
   min_upper        = 2
   min_special      = 2
   min_numeric      = 3
-  override_special = "!()-_=+[]{}<>:?"
+  override_special = "!;:?"
 }
 
 resource "azurerm_mariadb_server" "dbserver" {
@@ -14,7 +14,7 @@ resource "azurerm_mariadb_server" "dbserver" {
   resource_group_name = data.azurerm_resource_group.rg.name
 
   administrator_login          = "mariadbadmin"
-  administrator_login_password = random_password.dbpass.result
+  administrator_login_password = "otarierouge0607!"
 
   sku_name   = "GP_Gen5_2"
   storage_mb = 5120
@@ -24,7 +24,7 @@ resource "azurerm_mariadb_server" "dbserver" {
   backup_retention_days            = 7
   geo_redundant_backup_enabled     = false
   public_network_access_enabled    = true
-  ssl_enforcement_enabled          = true
+  ssl_enforcement_enabled          = false
   ssl_minimal_tls_version_enforced = "TLS1_2"
 }
 

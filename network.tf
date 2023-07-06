@@ -11,9 +11,6 @@ resource "random_string" "random" {
 locals {
   ipSpace    = ["10.1.0.0/16"]
   prefixName = "nab-"
-  subnets = {
-    "${local.prefixName}subnet-VM" = "10.1.1.0/24"
-  }
   ssh_pub_key = file("~/.ssh/terraform_key.pub")
   user = "nabila"
 }
@@ -28,9 +25,8 @@ resource "azurerm_virtual_network" "Vnet" {
 
 # Create subnet
 resource "azurerm_subnet" "Subnet" {
-  for_each             = local.subnets
-  name                 = each.key
-  address_prefixes     = [each.value]
+  name                 = "${local.prefixName}subnet-VM"
+  address_prefixes     = ["10.1.1.0/24"]
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.Vnet.name
 }

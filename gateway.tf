@@ -15,6 +15,7 @@ resource "azurerm_subnet" "gatewayfront" {
   address_prefixes     = ["10.1.2.0/24"]
 }
 
+
 resource "azurerm_application_gateway" "gw" {
   name                = "${local.prefixName}gw"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -43,6 +44,7 @@ resource "azurerm_application_gateway" "gw" {
 
   backend_address_pool {
     name  = local.backend_address_pool_name
+    ip_addresses = [azurerm_network_interface.nicApp.private_ip_address]
   }
 
   backend_http_settings {
@@ -66,12 +68,6 @@ resource "azurerm_application_gateway" "gw" {
     http_listener_name         = local.listener_name
     backend_address_pool_name  = local.backend_address_pool_name
     backend_http_settings_name = local.http_setting_name
-    priority                   = 1
+    priority                   = 100
   }
-}
-
-resource "azurerm_network_interface_application_gateway_backend_address_pool_association" "gwasso" {
-  network_interface_id    = azurerm_network_interface.nicApp.id
-  ip_configuration_name   = "internal"
-  backend_address_pool_id = tolist(azurerm_application_gateway.gw.backend_address_pool).0.id
 }

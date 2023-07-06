@@ -16,7 +16,7 @@ resource "azurerm_network_interface" "nicBastion" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.Subnet["${local.prefixName}subnet-VM"].id
+    subnet_id                     = azurerm_subnet.Subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.ipBastion.id
   }
@@ -77,7 +77,7 @@ resource "azurerm_network_interface" "nicApp" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.Subnet["${local.prefixName}subnet-VM"].id
+    subnet_id                     = azurerm_subnet.Subnet.id
     private_ip_address_allocation = "Dynamic"
   }
 }
