@@ -9,24 +9,24 @@
         python3 -c 'import crypt; print(crypt.crypt("{{ password_user1 }}", crypt.mksalt(crypt.METHOD_SHA512)))'
       register: hashed_password_user1
       vars:
-        password_user1: "Yoloansible246"  # Remplacez par le mot de passe souhaité pour le premier utilisateur
+        password_user1: "Yoloansible246" 
 
     - name: Generate password hash for user2
       ansible.builtin.command: >
         python3 -c 'import crypt; print(crypt.crypt("{{ password_user2 }}", crypt.mksalt(crypt.METHOD_SHA512)))'
       register: hashed_password_user2
       vars:
-        password_user2: "Yoloansible642"  # Remplacez par le mot de passe souhaité pour le deuxième utilisateur
+        password_user2: "Yoloansible642"  
 
     - name: Create user1
       ansible.builtin.user:
-        name: samM  # Remplacez par le nom d'utilisateur pour le premier utilisateur
+        name: samM  
         password: "{{ hashed_password_user1.stdout }}"
         state: present
 
     - name: Create user2
       ansible.builtin.user:
-        name: nabR  # Remplacez par le nom d'utilisateur pour le deuxième utilisateur
+        name: nabR  
         password: "{{ hashed_password_user2.stdout }}"
         state: present
 
@@ -37,13 +37,13 @@
 
     - name: Add user1 to sudo group
       ansible.builtin.user:
-        name: samM  # Remplacez par le nom d'utilisateur pour le premier utilisateur
+        name: samM  
         groups: sudo
         append: yes
 
     - name: Add user2 to sudo group
       ansible.builtin.user:
-        name: nabR  # Remplacez par le nom d'utilisateur pour le deuxième utilisateur
+        name: nabR  
         groups: sudo
         append: yes
 
