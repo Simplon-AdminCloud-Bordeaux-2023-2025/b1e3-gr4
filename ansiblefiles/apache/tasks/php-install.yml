@@ -1,7 +1,0 @@
----
-- name: "install php packages"
-  apt:
-    name: "php, php-cli, php-common, php-curl, php-gd, php-gmp, php-mbstring, php-mysql, php-xml"
-    state: latest
-  changed_when: yes
-  notify: [ "apache restart" ]

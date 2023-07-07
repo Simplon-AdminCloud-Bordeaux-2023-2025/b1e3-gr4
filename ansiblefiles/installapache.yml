@@ -1,6 +1,0 @@
----
-- name: "Install apache"
-  hosts: app
-  roles:
-    - role: "apache"
-      php_install: yes

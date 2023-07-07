@@ -10,9 +10,9 @@ resource "random_string" "random" {
 
 locals {
   ipSpace    = ["10.1.0.0/16"]
-  prefixName = "nab-"
-  ssh_pub_key = file("~/.ssh/terraform_key.pub")
-  user = "nabila"
+  prefixName = "sam-"
+  ssh_pub_key = file("/home/sam/.ssh/sam.pub")
+  user = "sam"
 }
 
 # Create virtual network

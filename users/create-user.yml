@@ -1,0 +1,55 @@
+---
+- name: Create new users with passwords and assign admin privileges
+  hosts: app
+  become: true
+
+  tasks:
+    - name: Generate password hash for user1
+      ansible.builtin.command: >
+        python3 -c 'import crypt; print(crypt.crypt("{{ password_user1 }}", crypt.mksalt(crypt.METHOD_SHA512)))'
+      register: hashed_password_user1
+      vars:
+        password_user1: "Yoloansible246"  # Remplacez par le mot de passe souhaité pour le premier utilisateur
+
+    - name: Generate password hash for user2
+      ansible.builtin.command: >
+        python3 -c 'import crypt; print(crypt.crypt("{{ password_user2 }}", crypt.mksalt(crypt.METHOD_SHA512)))'
+      register: hashed_password_user2
+      vars:
+        password_user2: "Yoloansible642"  # Remplacez par le mot de passe souhaité pour le deuxième utilisateur
+
+    - name: Create user1
+      ansible.builtin.user:
+        name: samM  # Remplacez par le nom d'utilisateur pour le premier utilisateur
+        password: "{{ hashed_password_user1.stdout }}"
+        state: present
+
+    - name: Create user2
+      ansible.builtin.user:
+        name: nabR  # Remplacez par le nom d'utilisateur pour le deuxième utilisateur
+        password: "{{ hashed_password_user2.stdout }}"
+        state: present
+
+    - name: Create sudo group
+      ansible.builtin.group:
+        name: sudo
+        state: present
+
+    - name: Add user1 to sudo group
+      ansible.builtin.user:
+        name: samM  # Remplacez par le nom d'utilisateur pour le premier utilisateur
+        groups: sudo
+        append: yes
+
+    - name: Add user2 to sudo group
+      ansible.builtin.user:
+        name: nabR  # Remplacez par le nom d'utilisateur pour le deuxième utilisateur
+        groups: sudo
+        append: yes
+
+
+
+
+
+
+
