@@ -1,5 +1,5 @@
 resource "azurerm_key_vault" "keyVault" {
-  name                     = "${local.prefixName}kv3-${random_string.random.result}"
+  name                     = "${local.prefixName}kv-${random_integer.random.result}"
   location                 = data.azurerm_resource_group.rg.location
   resource_group_name      = data.azurerm_resource_group.rg.name
   tenant_id                = data.azurerm_client_config.current.tenant_id
@@ -18,6 +18,14 @@ resource "azurerm_key_vault_access_policy" "terraform_user" {
   secret_permissions = [
     "Delete", "Get", "Purge", "Recover", "Restore", "Set", "List", "Backup"
   ]
+
+  certificate_permissions = [
+    "Delete", "Get", "Purge", "Recover", "Restore", "SetIssuers", "List", "Backup", "Import"
+  ]
+
+  key_permissions = [
+    "Delete", "Get", "Purge", "Recover", "Restore", "Create", "List", "Backup", "Import", "Decrypt", "Encrypt"
+  ]
 }
 
 
@@ -34,3 +42,4 @@ resource "azurerm_key_vault_secret" "passworddatabase" {
   value        = random_password.dbpass.result
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
 }
+
