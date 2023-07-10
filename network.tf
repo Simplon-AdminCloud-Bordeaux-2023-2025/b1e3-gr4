@@ -2,17 +2,26 @@ data "azurerm_resource_group" "rg" {
   name = "b1e3-gr4"
 }
 
-resource "random_string" "random" {
-  length    = 5
-  special   = false
-  min_lower = 5
+resource "random_integer" "random" {
+  min = 10
+  max = 500
+}
+
+resource "random_password" "dbpass" {
+  length           = 16
+  special          = true
+  min_lower        = 4
+  min_upper        = 2
+  min_special      = 2
+  min_numeric      = 3
+  override_special = "!;:?"
 }
 
 locals {
-  ipSpace    = ["10.1.0.0/16"]
-  prefixName = "sam-"
-  ssh_pub_key = file("/home/sam/.ssh/sam.pub")
-  user = "sam"
+  ipSpace     = ["10.1.0.0/16"]
+  prefixName  = "nab-"
+  ssh_pub_key = file("~/.ssh/terraform_key.pub")
+  user        = "nabila"
 }
 
 # Create virtual network
@@ -29,6 +38,8 @@ resource "azurerm_subnet" "Subnet" {
   address_prefixes     = ["10.1.1.0/24"]
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.Vnet.name
+  service_endpoints    = ["Microsoft.Sql"]
+  private_endpoint_network_policies_enabled = "true"
 }
 
 # Create Network Security Group and rule for Bastion
