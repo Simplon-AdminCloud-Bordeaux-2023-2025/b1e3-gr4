@@ -1,52 +1,60 @@
 ---
-- name: Create new users with passwords and assign admin privileges
-  hosts: app
-  become: true
-
+- hosts: all
   tasks:
-    - name: Generate password hash for user1
-      ansible.builtin.command: >
-        python3 -c 'import crypt; print(crypt.crypt("{{ password_user1 }}", crypt.mksalt(crypt.METHOD_SHA512)))'
-      register: hashed_password_user1
-      vars:
-        password_user1: "Yoloansible246" 
+    - name: Create nabR user
+      user:
+        name: nabR
+        shell: /bin/bash
+        groups: sudo
+        append: yes
 
-    - name: Generate password hash for user2
-      ansible.builtin.command: >
-        python3 -c 'import crypt; print(crypt.crypt("{{ password_user2 }}", crypt.mksalt(crypt.METHOD_SHA512)))'
-      register: hashed_password_user2
-      vars:
-        password_user2: "Yoloansible642"  
-
-    - name: Create user1
-      ansible.builtin.user:
-        name: samM  
-        password: "{{ hashed_password_user1.stdout }}"
+    - name: Add authorized key for nabR user
+      authorized_key:
+        user: nabR
         state: present
+        manage_dir: yes
+        key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQClHP1XYGl5bUUX0mLpxYSHi1dYyuK0U7omP9zM2PdVbJ5zRLh/+wLX0yGNeWtam/GPlyMzWpkTIkAoLGVHKW8i5HTxHXaVPX9pm9QFtJ9WVRR1/yDwz+XBQD+udlytva8B2gcyPL7ZGq27wA/mfZDAVYGnRv6MqJQJmfjvz+1k8uYlP86gm5Quix6sywmeR3ykoRh0oOfqgMu/HxzMptTxy4f6zX2e7yLG0IXyTYEPu3gMwOr1UJU1HZP6hGloBG3fWUEreEYmvKYtB+ICxyRvkfvT9w2SVwVzhoSr5v6uNWpFbgPAWQ+Bo22up5A/e4I97ENTOiAMzeWVLNepTPO66QPu1ySm2pWHiBcaMr6XTWbX5Z21QLS9IawSCBjzzTits1uu6kLv6BmarkqHu23/cO7ThdMh3aoZtEK1WXNRfYI6xncVH9zOK9UF2S0xE59xyKOWPmds8z0Lr0FjeR+bqXb0Zdx7T7GFWI3hT1f2j0gosbw4ZtQ4VVymWVeE/sw6pd6qdSW40824Azdj/oIIOswsqy9QaVNuzng24NRAN3xEGKrdtxL7oANUbe1qLYvR6SyWDCgm+D9v+n3DvZiGEbF1LpF2me20BI6h43vP2bI5IFyi3qUmd3EkDvLe2QKTs+QvEM2Qv+pbgnKxAQv2M0uANulJW63xWN6O1/NMEw== Terraform
 
-    - name: Create user2
-      ansible.builtin.user:
-        name: nabR  
-        password: "{{ hashed_password_user2.stdout }}"
+    - name: Create samM user
+      user:
+        name: samM
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+      
+    - name: Add authorized key for samM user
+      authorized_key:
+        user: samM
         state: present
+        manage_dir: yes
+        key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCmvzPhoky+wHRi/hbUxs5a5wFqMPZknv1rcQONToHlknxgQysys899XcdgW1iUNrfvCXT2SteyLjf0i60F8zKLQ3BFpeBi3R3igg34B0xz9yvQwVM355ixx3vX8Spi3DNYv3bIjqCxIygKz8fi9j3C5jPTO1Bu2UrN+D6ZegJD4qp38V2KXtb+9mztbBe8CTekETXxSL237yp7/hk16R6u5glfUXsrA02zP9qcc1Qjv1T5UiUdVvav1cPYZW1xJZD5qj98mQtxsQO6gnZY/jSL/v6eJvJIlUE4T8lbbTgWup73pc+vlWsz1gOIBdEiejom7AU+pmXDrh6jO4dPyELU3/9MMqzmS+midtYPyVANi5pGWHRJ6eiq/X6KOmAnx6y48PyPX1wFyXQDJ6+ExnIuIqW6QFMjIOBhhG524z4m2ttvs43rzLbQ7F9txxJk3s1aGBBd1QlWuT/pU+OMGRm+sd+vIRQQ6bnew9851QYBTO8nblD/V+qIawDpj2unIJE= generated-by-azure
 
+- hosts: all
+  tasks:
     - name: Create sudo group
       ansible.builtin.group:
         name: sudo
         state: present
 
-    - name: Add user1 to sudo group
+    - name: Add samM to sudo group
       ansible.builtin.user:
-        name: samM  
+        name: samM
         groups: sudo
         append: yes
 
-    - name: Add user2 to sudo group
+    - name: Add nabR to sudo group
       ansible.builtin.user:
-        name: nabR  
+        name: nabR
         groups: sudo
         append: yes
 
+    - name: sudo without password for wheel group
+      copy:
+        content: 'nabR ALL=(ALL:ALL) NOPASSWD:ALL'
+        dest: /etc/sudoers.d/nabR
+        mode: 0440
+
+    
 
 
 
