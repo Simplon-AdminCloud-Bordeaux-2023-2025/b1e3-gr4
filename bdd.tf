@@ -30,26 +30,26 @@ resource "azurerm_mariadb_database" "database" {
 
 #Create db subnet with a delegation to MicrosoftSQL 
 resource "azurerm_subnet" "dbsubnet" {
-  name                 = "${local.prefixName}subnet-mariadb"
-  resource_group_name  = data.azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.Vnet.name
-  address_prefixes     = ["10.1.3.0/24"]
-  service_endpoints    = ["Microsoft.Sql"]
+  name                                      = "${local.prefixName}subnet-mariadb"
+  resource_group_name                       = data.azurerm_resource_group.rg.name
+  virtual_network_name                      = azurerm_virtual_network.Vnet.name
+  address_prefixes                          = ["10.1.3.0/24"]
+  service_endpoints                         = ["Microsoft.Sql"]
   private_endpoint_network_policies_enabled = "true"
   delegation {
     name = "delegation"
     service_delegation {
-      name    = "Microsoft.DBforMySQL/servers"
+      name = "Microsoft.DBforMySQL/servers"
     }
   }
 }
 
 #Allow communication between dbserver and subnet
 #resource "azurerm_mariadb_virtual_network_rule" "subnetasso" {
-  #name                = "${local.prefixName}mariadb-vnet-rule"
-  #resource_group_name = data.azurerm_resource_group.rg.name
-  #server_name         = azurerm_mariadb_server.dbserver.name
-  #subnet_id           = azurerm_subnet.dbsubnet.id
+#name                = "${local.prefixName}mariadb-vnet-rule"
+#resource_group_name = data.azurerm_resource_group.rg.name
+#server_name         = azurerm_mariadb_server.dbserver.name
+#subnet_id           = azurerm_subnet.dbsubnet.id
 #}
 
 #Create private dns zone

@@ -1,52 +1,65 @@
 ---
-- name: Create new users with passwords and assign admin privileges
-  hosts: app
-  become: true
-
+- hosts: all
   tasks:
-    - name: Generate password hash for user1
-      ansible.builtin.command: >
-        python3 -c 'import crypt; print(crypt.crypt("{{ password_user1 }}", crypt.mksalt(crypt.METHOD_SHA512)))'
-      register: hashed_password_user1
-      vars:
-        password_user1: "Yoloansible246" 
+    - name: Create nabR user
+      user:
+        name: nabR
+        shell: /bin/bash
+        groups: sudo
+        append: yes
 
-    - name: Generate password hash for user2
-      ansible.builtin.command: >
-        python3 -c 'import crypt; print(crypt.crypt("{{ password_user2 }}", crypt.mksalt(crypt.METHOD_SHA512)))'
-      register: hashed_password_user2
-      vars:
-        password_user2: "Yoloansible642"  
-
-    - name: Create user1
-      ansible.builtin.user:
-        name: samM  
-        password: "{{ hashed_password_user1.stdout }}"
+    - name: Add authorized key for nabR user
+      authorized_key:
+        user: nabR
         state: present
+        manage_dir: yes
+        key: "{{ lookup('file', './terraform_key.pub') }}"
 
-    - name: Create user2
-      ansible.builtin.user:
-        name: nabR  
-        password: "{{ hashed_password_user2.stdout }}"
+    - name: Create samM user
+      user:
+        name: samM
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+      
+    - name: Add authorized key for samM user
+      authorized_key:
+        user: samM
         state: present
+        manage_dir: yes
+        key: "{{ lookup('file', './sam.pub') }}"
 
+- hosts: all
+  tasks:
     - name: Create sudo group
       ansible.builtin.group:
         name: sudo
         state: present
 
-    - name: Add user1 to sudo group
+    - name: Add samM to sudo group
       ansible.builtin.user:
-        name: samM  
+        name: samM
         groups: sudo
         append: yes
 
-    - name: Add user2 to sudo group
+    - name: Add nabR to sudo group
       ansible.builtin.user:
-        name: nabR  
+        name: nabR
         groups: sudo
         append: yes
 
+    - name: sudo without password for wheel group
+      copy:
+        content: 'nabR ALL=(ALL:ALL) NOPASSWD:ALL'
+        dest: /etc/sudoers.d/nabR
+        mode: 0440
+
+    - name: sudo without password for wheel group
+      copy:
+        content: 'samM ALL=(ALL:ALL) NOPASSWD:ALL'
+        dest: /etc/sudoers.d/samM
+        mode: 0440
+    
 
 
 
