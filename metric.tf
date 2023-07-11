@@ -1,6 +1,6 @@
 # Création du workspace Azure Monitor
 resource "azurerm_log_analytics_workspace" "workspace" {
-  name                = "monitoring-workspace"
+  name                = "${local.prefixName}monitoring-workspace"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   sku                 = "PerGB2018"
@@ -12,13 +12,12 @@ resource "azurerm_monitor_diagnostic_setting" "vm_monitoring" {
   name                       = "${local.prefixName}vm-monitoring"
   target_resource_id         = azurerm_linux_virtual_machine.app.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
-  enabled_log {
-    category = "LinuxSyslog"
-    
-  }
-  enabled_log {
-    category = "Metrics"
-   
+  metric {
+    category = "AllMetrics"
+
+    retention_policy {
+      enabled = false
+    }
   }
 }
 
@@ -27,33 +26,12 @@ resource "azurerm_monitor_diagnostic_setting" "db_monitoring" {
   name                       = "${local.prefixName}db-monitoring"
   target_resource_id         = azurerm_mariadb_server.dbserver.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
-  enabled_log {
-    category = "MySqlSlowLogs"
-    
-  }
-  enabled_log {
-    category = "MySqlGeneralLogs"
-   
-  }
-  enabled_log {
-    category = "MySqlErrorLogs"
-    
-  }
-  enabled_log {
-    category = "MySqlQueryStoreLogs"
-    
-  }
-  enabled_log {
-    category = "MySqlAuditLogs"
-    
-  }
-  enabled_log {
-    category = "MySqlBinLogs"
-    
-  }
-  enabled_log {
-    category = "Metrics"
- 
+    metric {
+    category = "AllMetrics"
+
+    retention_policy {
+      enabled = false
+    }
   }
 }
 
@@ -62,25 +40,14 @@ resource "azurerm_monitor_diagnostic_setting" "storage_monitoring" {
   name                       = "${local.prefixName}storage-monitoring"
   target_resource_id         = azurerm_storage_account.staccount.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
-  enabled_log {
-    category = "StorageRead"
-   
-  }
-  enabled_log {
-    category = "StorageWrite"
-    
-  }
-  enabled_log {
-    category = "StorageDelete"
-   
-  }
-  enabled_log {
-    category = "StorageAction"
-   
-  }
-  enabled_log {
-    category = "Metrics"
-   
+  metric {
+    category = "AllMetrics"
+    enabled  = true
+
+    retention_policy {
+      enabled = true
+      days    = 365
+    }
   }
 }
 
@@ -89,37 +56,31 @@ resource "azurerm_monitor_diagnostic_setting" "storage_monitoring" {
 resource "azurerm_monitor_scheduled_query_rules_alert" "app_unavailability_alert" {
   name                = "${local.prefixName}app-unavailability-alert"
   resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
   description         = "Alert when application is unavailable"
   severity            = 2
 
-  data_source_id = azurerm_monitor_log_profile.log_profile.id
-  time_window    = "PT5M"
-
-  query {
-    query = <<QUERY
-AppAvailability
-| where Success == false
-| summarize total_failures = count() by Computer, _ResourceId
+  data_source_id = azurerm_linux_virtual_machine.app.id
+  time_window    = 30
+  query          = <<QUERY
+Heartbeat | summarize LastHeartbeat = max(TimeGenerated) by Computer | 
+where Computer == "${azurerm_linux_virtual_machine.app.name}" | 
+where LastHeartbeat < ago(5m)
 QUERY
-  }
+  frequency      = 5
 
   trigger {
     operator  = "GreaterThan"
     threshold = 0
-    time_range {
-      from = "PT5M"
-      to   = "PT10M"
-    }
   }
 
   action {
-    action_group_id = azurerm_monitor_action_group.notification_group.id
+    action_group = [azurerm_monitor_action_group.notification_group.id]
   }
 }
 
 
 # Création d'une alerte si l'utilisation du CPU dépasse 90% sur la machine virtuelle d'application
-
 resource "azurerm_monitor_metric_alert" "cpu_usage_alert" {
   name                = "${local.prefixName}cpu-usage-alert"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -129,17 +90,11 @@ resource "azurerm_monitor_metric_alert" "cpu_usage_alert" {
   enabled             = true
 
   criteria {
-    metric_namespace  = "Microsoft.Compute/virtualMachines"
-    metric_name       = "Percentage CPU"
-    aggregation       = "Average"
-    operator          = "GreaterThan"
-    threshold         = 90
-
-    dimension {
-      name     = "InstanceId"
-      operator = "Include"
-      values   = [azurerm_linux_virtual_machine.app.id]
-    }
+    metric_namespace = "Microsoft.Compute/virtualMachines"
+    metric_name      = "Percentage CPU"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = 90
   }
 
   action {
@@ -149,33 +104,26 @@ resource "azurerm_monitor_metric_alert" "cpu_usage_alert" {
 
 
 # Création d'une alerte si la date d'expiration du certificat TLS est inférieure à 7 jours
+# resource "azurerm_monitor_metric_alert" "certificate_expiry_alert" {
+#   name                = "${local.prefixName}certificate-expiry-alert"
+#   resource_group_name = data.azurerm_resource_group.rg.name
+#   description         = "Alert when TLS certificate expiry is less than 7 days"
+#   severity            = 2
 
-resource "azurerm_monitor_metric_alert" "certificate_expiry_alert" {
-  name                = "${local.prefixName}certificate-expiry-alert"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  description         = "Alert when TLS certificate expiry is less than 7 days"
-  severity            = 2
+#   scopes = [azurerm_linux_virtual_machine.app.id]
 
-  scopes = [azurerm_linux_virtual_machine.app.id]
+#   criteria {
+#     metric_namespace = "Microsoft.Security/certificates"
+#     metric_name      = "Certificate Expiry Date"
+#     aggregation      = "Maximum"
+#     operator         = "LessThan"
+#     threshold        = 7
+#   }
 
-  criteria {
-    metric_namespace = "Microsoft.Security/certificates"
-    metric_name      = "Certificate Expiry Date"
-    aggregation      = "Maximum"
-    operator         = "LessThan"
-    threshold        = 7
-
-    dimension {
-      name     = "certificateName"
-      operator = "Include"
-      values   = ["certificategr4"]
-    }
-  }
-
-  action {
-    action_group_id = azurerm_monitor_action_group.notification_group.id
-  }
-}
+#   action {
+#     action_group_id = azurerm_monitor_action_group.notification_group.id
+#   }
+# }
 
 
 
@@ -185,21 +133,15 @@ resource "azurerm_monitor_metric_alert" "storage_space_alert" {
   resource_group_name = data.azurerm_resource_group.rg.name
   description         = "Alert when storage space is less than 10%"
   severity            = 2
-
-  scopes = [azurerm_storage_account.staccount.id]
+  window_size         = "PT1H"
+  scopes              = [azurerm_storage_account.staccount.id]
 
   criteria {
     metric_namespace = "Microsoft.Storage/storageAccounts"
     metric_name      = "UsedCapacity"
-    aggregation      = "Maximum"
+    aggregation      = "Average"
     operator         = "LessThan"
     threshold        = 10
-
-    dimension {
-      name     = "ResourceId"
-      operator = "Include"
-      values   = [azurerm_storage_account.staccount.id]
-    }
   }
 
   action {
