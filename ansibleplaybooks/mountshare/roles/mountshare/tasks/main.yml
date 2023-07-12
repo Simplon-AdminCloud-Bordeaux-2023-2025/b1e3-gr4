@@ -1,0 +1,15 @@
+---
+- name: utility present
+  ansible.builtin.package:
+    name: cifs-utils
+    state: present
+
+- name: check mountpoint exist
+  ansible.builtin.file:
+    path: "{{ mountpoint }}"
+    state: directory
+    mode: '0777'
+
+- name: "Mount network share"
+  command:
+    sudo mount -t cifs //"{{ username }}".file.core.windows.net/"{{ share_name}}" "{{ mountpoint }}" -o username="{{ username }}",password="{{ password }}",dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30

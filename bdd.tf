@@ -4,8 +4,8 @@ resource "azurerm_mariadb_server" "dbserver" {
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
 
-  administrator_login          = "mariadbadmin"
-  administrator_login_password = "otarierouge0607!"
+  administrator_login          = local.dbserveradmin
+  administrator_login_password = random_password.dbpass.result
 
   sku_name   = "GP_Gen5_2"
   storage_mb = 5120

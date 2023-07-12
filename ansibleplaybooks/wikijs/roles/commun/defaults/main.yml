@@ -1,0 +1,8 @@
+---
+vaultname: nab-kv-254
+vaultsecretname: admindbpassword
+tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
+ 
+hostdb: nab-mariadb-server.mariadb.database.azure.com
+userdb: maridbuser
+dbname: wikijs

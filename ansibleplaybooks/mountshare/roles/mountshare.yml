@@ -1,0 +1,8 @@
+---
+- name: mount share file
+  hosts: app
+  become: true
+  roles:
+    - role: "mountshare"
+
+    

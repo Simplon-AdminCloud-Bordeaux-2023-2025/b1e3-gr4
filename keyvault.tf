@@ -38,8 +38,16 @@ resource "azurerm_key_vault_secret" "ssh_public_key" {
 
 resource "azurerm_key_vault_secret" "passworddatabase" {
   key_vault_id = azurerm_key_vault.keyVault.id
-  name         = "admindbpassword"
+  name         = local.dbserveradmin
   value        = random_password.dbpass.result
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
 }
+
+resource "azurerm_key_vault_secret" "passworddatabaseuser" {
+  key_vault_id = azurerm_key_vault.keyVault.id
+  name         = local.dbuser
+  value        = random_password.dbpassuser.result
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+}
+
 

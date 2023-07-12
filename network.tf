@@ -14,14 +14,27 @@ resource "random_password" "dbpass" {
   min_upper        = 2
   min_special      = 2
   min_numeric      = 3
-  override_special = "!;:?"
+  override_special = "!?"
+}
+
+resource "random_password" "dbpassuser" {
+  length           = 16
+  special          = true
+  min_lower        = 4
+  min_upper        = 2
+  min_special      = 2
+  min_numeric      = 3
+  override_special = "!?"
 }
 
 locals {
-  ipSpace     = ["10.1.0.0/16"]
-  prefixName  = "nab-"
-  ssh_pub_key = file("~/.ssh/terraform_key.pub")
-  user        = "nabila"
+  ipSpace             = ["10.1.0.0/16"]
+  prefixName          = "nab-"
+  path_to_private_key = "~/.ssh/terraform_key"
+  ssh_pub_key         = file("~/.ssh/terraform_key.pub")
+  user                = "nabila"
+  dbserveradmin = "mariadbadmin"
+  dbuser = "wikijsdbuser"
 }
 
 # Create virtual network

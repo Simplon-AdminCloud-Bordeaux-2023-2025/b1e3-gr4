@@ -100,26 +100,3 @@ resource "azurerm_application_gateway" "gw" {
   }
 }
 
-resource "tls_private_key" "reg_private_key" {
-  algorithm = "RSA"
-}
-
-resource "azurerm_key_vault_secret" "letsencrypt_key" {
-  key_vault_id = azurerm_key_vault.keyVault.id
-  name         = "letsencrypt-key"
-  value        = tls_private_key.reg_private_key.private_key_pem
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
-}
-
-resource "acme_registration" "reg" {
-  account_key_pem = tls_private_key.reg_private_key.private_key_pem
-  email_address   = "nrizki@simplonformations.onmicrosoft.com"
-}
-
-resource "acme_certificate" "certificate" {
-  account_key_pem = tls_private_key.reg_private_key.private_key_pem
-  common_name     = azurerm_public_ip.ipApp.fqdn
-  http_challenge {
-    port = "80"
-  }
-}

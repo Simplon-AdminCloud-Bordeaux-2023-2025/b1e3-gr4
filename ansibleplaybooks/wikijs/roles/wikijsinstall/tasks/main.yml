@@ -23,7 +23,9 @@
     state: absent
 
 - name: "Upgrade all apt packages"
-  apt: upgrade=dist
+  apt:
+    upgrade: yes
+    update_cache: yes
 
 - name: "Install nodejs"
   apt:

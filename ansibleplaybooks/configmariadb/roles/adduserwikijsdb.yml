@@ -1,0 +1,12 @@
+---
+- name: "Get Azure info"
+  hosts: localhost
+  roles:
+    - role: localhostinfo
+
+- name: "Config BDD"
+  hosts: app
+  become: true
+  roles:
+    - role: "adduser"
+
