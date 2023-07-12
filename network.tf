@@ -8,20 +8,29 @@ resource "random_integer" "random" {
 }
 
 resource "random_password" "dbpass" {
-  length           = 16
-  special          = true
-  min_lower        = 4
-  min_upper        = 2
-  min_special      = 2
-  min_numeric      = 3
-  override_special = "!;:?"
+  length      = 16
+  min_lower   = 4
+  min_upper   = 2
+  special     = false
+  min_numeric = 3
+}
+
+resource "random_password" "dbpassuser" {
+  length      = 16
+  min_lower   = 4
+  min_upper   = 2
+  special     = false
+  min_numeric = 3
 }
 
 locals {
-  ipSpace     = ["10.1.0.0/16"]
-  prefixName  = "nab-"
-  ssh_pub_key = file("~/.ssh/terraform_key.pub")
-  user        = "nabila"
+  ipSpace             = ["10.1.0.0/16"]
+  prefixName          = "nab-"
+  path_to_private_key = "~/.ssh/terraform_key"
+  ssh_pub_key         = file("~/.ssh/terraform_key.pub")
+  user                = "nabila"
+  dbserveradmin       = "mariadbadmin"
+  dbuser              = "wikijsdbuser"
 }
 
 # Create virtual network
@@ -34,11 +43,11 @@ resource "azurerm_virtual_network" "Vnet" {
 
 # Create subnet
 resource "azurerm_subnet" "Subnet" {
-  name                 = "${local.prefixName}subnet-VM"
-  address_prefixes     = ["10.1.1.0/24"]
-  resource_group_name  = data.azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.Vnet.name
-  service_endpoints    = ["Microsoft.Sql"]
+  name                                      = "${local.prefixName}subnet-VM"
+  address_prefixes                          = ["10.1.1.0/24"]
+  resource_group_name                       = data.azurerm_resource_group.rg.name
+  virtual_network_name                      = azurerm_virtual_network.Vnet.name
+  service_endpoints                         = ["Microsoft.Sql"]
   private_endpoint_network_policies_enabled = "true"
 }
 

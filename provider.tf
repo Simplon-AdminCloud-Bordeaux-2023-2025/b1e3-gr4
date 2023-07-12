@@ -8,6 +8,10 @@ terraform {
       source  = "vancluever/acme"
       version = "2.15.1"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = "3.2.1"
+    }
   }
 }
 

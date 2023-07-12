@@ -1,6 +1,0 @@
----
-- name: "Install wikijs"
-  hosts: app
-  roles:
-    - role: "wikijs"
-

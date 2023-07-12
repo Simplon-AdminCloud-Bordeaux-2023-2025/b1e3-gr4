@@ -1,0 +1,26 @@
+---
+- name: Get admin password from keyvault
+  shell: az keyvault secret show --name "{{ vaultsecretnameadmin }}" --vault-name "{{ vaultname }}" --query value -o tsv
+  args:
+    executable: /usr/bin/bash
+  register: result
+- debug:
+    msg: "{{ result.stdout }}" 
+
+- name: Register dummy host with variable
+  add_host:
+    name: "DUMMY_HOST1"
+    adminpass: "{{ result.stdout }}"
+
+- name: Get admin password from keyvault
+  shell: az keyvault secret show --name "{{ vaultsecretnameuser }}" --vault-name "{{ vaultname }}" --query value -o tsv
+  args:
+    executable: /usr/bin/bash
+  register: result
+- debug:
+    msg: "{{ result.stdout }}" 
+
+- name: Register dummy host with variable
+  add_host:
+    name: "DUMMY_HOST2"
+    userpass: "{{ result.stdout }}"

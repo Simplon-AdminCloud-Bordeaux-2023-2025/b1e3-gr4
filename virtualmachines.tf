@@ -115,3 +115,4 @@ resource "azurerm_linux_virtual_machine" "app" {
     public_key = local.ssh_pub_key
   }
 }
+

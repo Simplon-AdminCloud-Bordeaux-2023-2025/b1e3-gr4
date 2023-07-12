@@ -1,0 +1,17 @@
+---
+- name: connect to Azure
+  shell: az login
+  args:
+    executable: /usr/bin/bash
+- name: Run az command
+  shell: az keyvault secret show --name "{{ vaultsecretname }}" --vault-name "{{ vaultname }}" --query value -o tsv
+  args:
+    executable: /usr/bin/bash
+  register: result
+- debug:
+    msg: "{{ result.stdout }}" 
+
+- name: Register dummy host with variable
+  add_host:
+    name: "DUMMY_HOST"
+    dbpass: "{{ result.stdout }}"

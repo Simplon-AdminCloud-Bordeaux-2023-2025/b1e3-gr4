@@ -1,0 +1,68 @@
+---
+- hosts: all
+  tasks:
+    - name: Create nabR user
+      user:
+        name: nabR
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+
+    - name: Add authorized key for nabR user
+      authorized_key:
+        user: nabR
+        state: present
+        manage_dir: yes
+        key: "{{ lookup('file', './terraform_key.pub') }}"
+
+    - name: Create samM user
+      user:
+        name: samM
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+      
+    - name: Add authorized key for samM user
+      authorized_key:
+        user: samM
+        state: present
+        manage_dir: yes
+        key: "{{ lookup('file', './sam.pub') }}"
+
+- hosts: all
+  tasks:
+    - name: Create sudo group
+      ansible.builtin.group:
+        name: sudo
+        state: present
+
+    - name: Add samM to sudo group
+      ansible.builtin.user:
+        name: samM
+        groups: sudo
+        append: yes
+
+    - name: Add nabR to sudo group
+      ansible.builtin.user:
+        name: nabR
+        groups: sudo
+        append: yes
+
+    - name: sudo without password for wheel group
+      copy:
+        content: 'nabR ALL=(ALL:ALL) NOPASSWD:ALL'
+        dest: /etc/sudoers.d/nabR
+        mode: 0440
+
+    - name: sudo without password for wheel group
+      copy:
+        content: 'samM ALL=(ALL:ALL) NOPASSWD:ALL'
+        dest: /etc/sudoers.d/samM
+        mode: 0440
+    
+
+
+
+
+
+

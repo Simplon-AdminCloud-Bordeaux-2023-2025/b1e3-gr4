@@ -1,7 +1,7 @@
 locals {
   backend_address_pool_name      = "${azurerm_virtual_network.Vnet.name}-beap"
-  frontend_port_name_http            = "${azurerm_virtual_network.Vnet.name}-feport-http"
-  frontend_port_name_https            = "${azurerm_virtual_network.Vnet.name}-feport-https"
+  frontend_port_name_http        = "${azurerm_virtual_network.Vnet.name}-feport-http"
+  frontend_port_name_https       = "${azurerm_virtual_network.Vnet.name}-feport-https"
   frontend_ip_configuration_name = "${azurerm_virtual_network.Vnet.name}-feip"
   http_setting_name              = "${azurerm_virtual_network.Vnet.name}-be-htst"
   listener_name                  = "${azurerm_virtual_network.Vnet.name}-httplstn"
@@ -99,3 +99,4 @@ resource "azurerm_application_gateway" "gw" {
     include_query_string = false
   }
 }
+
