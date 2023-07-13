@@ -1,4 +1,5 @@
 ---
+- set_fact: password={{ hostvars['GHOST_HOST']['accesskey'] }}
 - name: utility present
   ansible.builtin.package:
     name: cifs-utils

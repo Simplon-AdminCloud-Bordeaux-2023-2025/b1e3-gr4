@@ -4,12 +4,10 @@
   args:
     executable: /usr/bin/bash
   register: result
-- debug:
-    msg: "{{ result.stdout }}" 
 
-- name: Register dummy host with variable
+- name: Register ghost host with variable
   add_host:
-    name: "DUMMY_HOST1"
+    name: "GHOST_HOST1"
     adminpass: "{{ result.stdout }}"
 
 - name: Get admin password from keyvault
@@ -17,10 +15,9 @@
   args:
     executable: /usr/bin/bash
   register: result
-- debug:
-    msg: "{{ result.stdout }}" 
 
-- name: Register dummy host with variable
+
+- name: Register ghost host with variable
   add_host:
-    name: "DUMMY_HOST2"
+    name: "GHOST_HOST2"
     userpass: "{{ result.stdout }}"

@@ -1,5 +1,5 @@
 ---
-- set_fact: dbpass={{ hostvars['DUMMY_HOST']['dbpass'] }}
+- set_fact: dbpass={{ hostvars['GHOST_HOST']['dbpass'] }}
 - name: Edit port config.yml
   ansible.builtin.lineinfile:
     path: ./wiki/config.yml

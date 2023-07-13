@@ -1,4 +1,9 @@
 ---
+- name: Get access key
+  hosts: localhost
+  roles:
+    - role: "localhostinfo"
+
 - name: mount share file
   hosts: app
   become: true

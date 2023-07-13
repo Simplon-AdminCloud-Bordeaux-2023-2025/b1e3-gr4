@@ -50,4 +50,11 @@ resource "azurerm_key_vault_secret" "passworddatabaseuser" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
 }
 
+resource "azurerm_key_vault_secret" "filesharekey" {
+  key_vault_id = azurerm_key_vault.keyVault.id
+  name         = "${azurerm_storage_account.staccount.name}-accessKey"
+  value        = azurerm_storage_account.staccount.primary_access_key
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+}
+
 
