@@ -50,7 +50,126 @@ resource "azurerm_application_insights_workbook" "workbook" {
   }
 }
 
+# Création d'un classeur regroupant des métriques de la machine applicative, de la base de donnée et du compte de stockage
+# resource "azurerm_application_insights_workbook" "workbook" {
+#   name                = "06f54e0a-1bfa-11ee-be56-0242ac120002"
+#   resource_group_name = data.azurerm_resource_group.existing.name
+#   location            = data.azurerm_resource_group.existing.location
+#   display_name        = "${local.group_name}-workbook"
+#   source_id           = "c56aea2c-50de-4adc-9673-6a8008892c21"
+#   data_json = jsonencode({
+#     "version" : "Notebook/1.0",
+#     "items" : [
+#       {
+#         "type" : 1,
+#         "content" : {
+#           "json" : "Metriques de la base de données, de la machine applicative et du compte de stockage."
+#         },
+#         "name" : "text - 0"
+#       },
+#       {
+#         "type" : 10,
+#         "content" : {
+#           "chartId" : "workbook76a04e93-6e87-4de3-a31b-8e6f79d6ecb5",
+#           "version" : "MetricsItem/2.0",
+#           "size" : 0,
+#           "chartType" : 2,
+#           "resourceType" : "microsoft.compute/virtualmachines",
+#           "metricScope" : 0,
+#           "resourceIds" : [
+#             "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr1/providers/Microsoft.Compute/virtualMachines/b1e3-gr1-vm-gitea"
+#           ],
+#           "timeContext" : {
+#             "durationMs" : 3600000
+#           },
+#           "metrics" : [
+#             {
+#               "namespace" : "microsoft.compute/virtualmachines",
+#               "metric" : "microsoft.compute/virtualmachines--Percentage CPU",
+#               "aggregation" : 4,
+#               "splitBy" : null,
+#               "columnName" : "CPU"
+#             },
+#             {
+#               "namespace" : "microsoft.compute/virtualmachines",
+#               "metric" : "microsoft.compute/virtualmachines--VmAvailabilityMetric",
+#               "aggregation" : 4,
+#               "columnName" : "Availability"
+#             }
+#           ],
+#           "gridSettings" : {
+#             "rowLimit" : 10000
+#           }
+#         },
+#         "name" : "métrique - 1"
+#       },
+#       {
+#         "type" : 10,
+#         "content" : {
+#           "chartId" : "workbook3f34abd3-339e-4233-9f28-121dd2631da7",
+#           "version" : "MetricsItem/2.0",
+#           "size" : 0,
+#           "chartType" : 2,
+#           "resourceType" : "microsoft.dbforpostgresql/servers",
+#           "metricScope" : 0,
+#           "resourceIds" : [
+#             "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr1/providers/Microsoft.DBforPostgreSQL/servers/b1e3-gr1-postgres-server"
+#           ],
+#           "timeContext" : {
+#             "durationMs" : 1800000
+#           },
+#           "metrics" : [
+#             {
+#               "namespace" : "microsoft.dbforpostgresql/servers",
+#               "metric" : "microsoft.dbforpostgresql/servers-Saturation-backup_storage_used",
+#               "aggregation" : 4,
+#               "splitBy" : null,
+#               "columnName" : "Backup storage "
+#             }
+#           ],
+#           "gridSettings" : {
+#             "rowLimit" : 10000
+#           }
+#         },
+#         "name" : "métrique - 2"
+#       },
+#       {
+#         "type" : 10,
+#         "content" : {
+#           "chartId" : "workbook6c43fe94-6262-4c2b-8238-638a0950af10",
+#           "version" : "MetricsItem/2.0",
+#           "size" : 0,
+#           "chartType" : 2,
+#           "resourceType" : "microsoft.storage/storageaccounts",
+#           "metricScope" : 0,
+#           "resourceIds" : [
+#             "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr1/providers/Microsoft.Storage/storageAccounts/b1e3gr1sa"
+#           ],
+#           "timeContext" : {
+#             "durationMs" : 3600000
+#           },
+#           "metrics" : [
+#             {
+#               "namespace" : "microsoft.storage/storageaccounts",
+#               "metric" : "microsoft.storage/storageaccounts-Capacity-UsedCapacity",
+#               "aggregation" : 4,
+#               "splitBy" : null
+#             }
+#           ],
+#           "gridSettings" : {
+#             "rowLimit" : 10000
+#           }
+#         },
+#         "name" : "métrique - 3"
+#       }
+#     ],
+#     "fallbackResourceIds" : [
+#       "c56aea2c-50de-4adc-9673-6a8008892c21"
+#     ],
+#     "$schema" : "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+#   })
 
+# }
 
 # Activation de la surveillance de la machine virtuelle dans Azure Monitor
 resource "azurerm_monitor_diagnostic_setting" "vm_monitoring" {
