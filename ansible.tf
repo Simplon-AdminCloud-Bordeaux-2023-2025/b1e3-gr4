@@ -96,11 +96,11 @@ resource "null_resource" "mountshare" {
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<EOT
-    echo "---" >> ./ansibleplaybooks/mountshare/roles/defaults/main.yml;
-    echo "mountpoint: /wikijs" >> ./ansibleplaybooks/mountshare/roles/defaults/main.yml;
-    echo "username: ${azurerm_storage_share.share.name}" >> ./ansibleplaybooks/mountshare/roles/defaults/main.yml;
-    echo "share_name: ${azurerm_storage_share_directory.sharedirectory.name}" >> ./ansibleplaybooks/mountshare/roles/defaults/main.yml;
-    echo "password: pass" >> ./ansibleplaybooks/mountshare/roles/defaults/main.yml
+    echo "---" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo "mountpoint: /wikijs" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo "username: ${azurerm_storage_account.staccount.name}" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo "share_name: ${azurerm_storage_share.share.name}" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo "password: pass" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml
      EOT
   }
 }

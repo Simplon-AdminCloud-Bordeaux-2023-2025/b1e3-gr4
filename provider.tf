@@ -4,10 +4,6 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "3.62.1"
     }
-    acme = {
-      source  = "vancluever/acme"
-      version = "2.15.1"
-    }
     null = {
       source  = "hashicorp/null"
       version = "3.2.1"

@@ -1,16 +1,25 @@
 ---
 - set_fact: adminpass={{ hostvars['DUMMY_HOST1']['adminpass'] }}
 - set_fact: userpass={{ hostvars['DUMMY_HOST2']['userpass'] }}
-- name: "Install mysql-client"
+- name: "Upgrade all apt packages"
   apt:
-    name: mysql-client
+    upgrade: yes
+    update_cache: yes
+- name: "Install python"
+  apt:
+    name: python3-pip
     state: present
-- name: "Use database"
+- name: "Install pymssql"
   command:
-      echo USE "{{ dbname }}"; | mysql -h "{{ hostdb }}" -u "{{ admindb }}" -p"{{ adminpass }}"
-- name: "Give privileges to user "
-  command:
-      echo GRANT ALL PRIVILEGES ON "{{ dbname }}".* TO "{{ userdb }}"@'%' WITH GRANT OPTION; | mysql -h "{{ hostdb }}" -u "{{ admindb }}" -p"{{ adminpass }}"
-- name: "Flush privileges"
-  command:
-      echo FLUSH PRIVILEGES; | mysql -h "{{ hostdb }}" -u "{{ admindb }}" -p"{{ adminpass }}"    
+    pip install pymssql
+- name: "Add user "
+  community.general.mssql_script:
+    login_user: "{{ admindb }}"
+    login_password: "{{ adminpass }}"
+    login_host: "{{ hostdb }}"
+    login_port: "3306"
+    script: |
+      USE "{{ dbname }}";
+      CREATE USER "{{ userdb }}" IDENTIFIED BY "{{ userpass }}";
+      GRANT ALL PRIVILEGES ON "{{ dbname }}".* TO "{{ userdb }}"@'%' WITH GRANT OPTION;
+      FLUSH PRIVILEGES; 
