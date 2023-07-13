@@ -8,8 +8,9 @@ resource "azurerm_recovery_services_vault" "vault" {
 resource "azurerm_storage_share" "storage_share" {
   name                 = "share"
   storage_account_name = azurerm_storage_account.staccount.name
-  quota                = 1
+  quota                = 5
 }
+
 
 resource "azurerm_backup_container_storage_account" "protection-container" {
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -24,7 +25,7 @@ resource "azurerm_backup_policy_file_share" "backup-policy" {
 
   backup {
     frequency = "Daily"
-    time      = "23:00"
+    time      = "09:30"
   }
 
   retention_daily {
@@ -38,22 +39,27 @@ resource "azurerm_backup_protected_file_share" "share1" {
   source_storage_account_id = azurerm_backup_container_storage_account.protection-container.storage_account_id
   source_file_share_name    = azurerm_storage_share.storage_share.name
   backup_policy_id          = azurerm_backup_policy_file_share.backup-policy.id
-}
 
-resource "azurerm_backup_policy_vm" "backup-policy-vm" {
-  name                = "tfex-recovery-vault-policy-vm"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  recovery_vault_name = azurerm_recovery_services_vault.vault.name
-
-  backup {
-    frequency = "Daily"
-    time      = "23:00"
-  }
-
-  retention_daily {
-    count = 10
+  lifecycle {
+    ignore_changes = [source_storage_account_id]
   }
 }
+
+# resource "azurerm_backup_policy_vm" "backup-policy-vm" {
+#   name                = "tfex-recovery-vault-policy-vm"
+#   resource_group_name = data.azurerm_resource_group.rg.name
+#   recovery_vault_name = azurerm_recovery_services_vault.vault.name
+
+#   backup {
+#     frequency = "Daily"
+#     time      = "09:30"
+#   }
+
+#   retention_daily {
+#     count = 10
+#   }
+# }
+
 
 
 

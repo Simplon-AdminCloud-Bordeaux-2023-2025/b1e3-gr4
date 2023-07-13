@@ -24,4 +24,22 @@
 ``` ansible-playbook -i ansiblefiles/inventory.ini --user your_user --become ansiblefiles/sinstallwikijs.yml ```
 
 
+#### Création d'utilisateurs avec Ansible ####
+
+##### Personnalisation requise #####
+ 
+ * Vous devez personnaliser les noms des utilisateurs selon vos besoins ainsi que le chemin de voc slé SSH
+
+
+ ##### Commande Ansible à exécuter : #####
+
+* Pour exécuter le fichier create-user.yml à l'aide d'Ansible, vous pouvez utiliser la commande suivante :
+
+``` ansible-playbook -i ansiblefiles/inventory.ini --user your_user --become users/create-user.yml ```
+
+
+
+
+
+
 

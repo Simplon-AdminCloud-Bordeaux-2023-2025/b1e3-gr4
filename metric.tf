@@ -7,13 +7,61 @@ resource "azurerm_log_analytics_workspace" "workspace" {
   retention_in_days   = 30
 }
 
+
+resource "azurerm_application_insights_workbook" "workbook" {
+  name                = "85b3e8bb-fc93-40be-83f2-98f6bec18ba0"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  display_name        = "workbook1"
+
+  data_json = jsonencode({
+    appUnavailabilityAlert = {
+      value = "${local.prefixName}app-unavailability-alert"
+    },
+    cpuUsageAlert = {
+      value = "${local.prefixName}cpu-usage-alert"
+    },
+    storageSpaceAlert = {
+      value = "${local.prefixName}storage-space-alert"
+    },
+    "isLocked" = false,
+    "fallbackResourceIds" = [
+      "Azure Monitor"
+    ],
+    "metrics" = [
+      {
+        "name": "appUnavailabilityAlert",
+        "aggregationType": "Count",
+        "timeRange": "P1D",
+       
+      },
+      {
+        "name": "cpuUsageAlert",
+        "aggregationType": "Avg",
+        "timeRange": "P7D",
+       
+      },
+     
+    ]
+  })
+
+  tags = {
+    ENV = "Test"
+  }
+}
+
+
+
 # Activation de la surveillance de la machine virtuelle dans Azure Monitor
 resource "azurerm_monitor_diagnostic_setting" "vm_monitoring" {
   name                       = "${local.prefixName}vm-monitoring"
   target_resource_id         = azurerm_linux_virtual_machine.app.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
+  
+  
   metric {
     category = "AllMetrics"
+    
 
     retention_policy {
       enabled = false
@@ -26,6 +74,7 @@ resource "azurerm_monitor_diagnostic_setting" "db_monitoring" {
   name                       = "${local.prefixName}db-monitoring"
   target_resource_id         = azurerm_mariadb_server.dbserver.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
+ 
     metric {
     category = "AllMetrics"
 
@@ -36,20 +85,20 @@ resource "azurerm_monitor_diagnostic_setting" "db_monitoring" {
 }
 
 # Activation de la surveillance de l'espace de stockage dans Azure Monitor
-resource "azurerm_monitor_diagnostic_setting" "storage_monitoring" {
-  name                       = "${local.prefixName}storage-monitoring"
-  target_resource_id         = azurerm_storage_account.staccount.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
-  metric {
-    category = "AllMetrics"
-    enabled  = true
+# resource "azurerm_monitor_diagnostic_setting" "storage_monitoring" {
+#   name                       = "${local.prefixName}storage-monitoring"
+#   target_resource_id         = azurerm_storage_account.staccount.id
+#   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
+#   metric {
+#     category = "AllMetrics"
+#     enabled  = true
 
-    retention_policy {
-      enabled = true
-      days    = 365
-    }
-  }
-}
+#     retention_policy {
+#       enabled = true
+#       days    = 365
+#     }
+#   }
+# }
 
 
 # Création d'une alerte en cas d'indisponibilité de l'application
@@ -79,7 +128,6 @@ QUERY
   }
 }
 
-
 # Création d'une alerte si l'utilisation du CPU dépasse 90% sur la machine virtuelle d'application
 resource "azurerm_monitor_metric_alert" "cpu_usage_alert" {
   name                = "${local.prefixName}cpu-usage-alert"
@@ -101,31 +149,6 @@ resource "azurerm_monitor_metric_alert" "cpu_usage_alert" {
     action_group_id = azurerm_monitor_action_group.notification_group.id
   }
 }
-
-
-# Création d'une alerte si la date d'expiration du certificat TLS est inférieure à 7 jours
-# resource "azurerm_monitor_metric_alert" "certificate_expiry_alert" {
-#   name                = "${local.prefixName}certificate-expiry-alert"
-#   resource_group_name = data.azurerm_resource_group.rg.name
-#   description         = "Alert when TLS certificate expiry is less than 7 days"
-#   severity            = 2
-
-#   scopes = [azurerm_linux_virtual_machine.app.id]
-
-#   criteria {
-#     metric_namespace = "Microsoft.Security/certificates"
-#     metric_name      = "Certificate Expiry Date"
-#     aggregation      = "Maximum"
-#     operator         = "LessThan"
-#     threshold        = 7
-#   }
-
-#   action {
-#     action_group_id = azurerm_monitor_action_group.notification_group.id
-#   }
-# }
-
-
 
 # Création d'une alerte si l'espace disponible sur l'espace de stockage est inférieur à 10%
 resource "azurerm_monitor_metric_alert" "storage_space_alert" {
@@ -162,7 +185,7 @@ resource "azurerm_monitor_action_group" "notification_group" {
   }
   email_receiver {
     name          = "email-dom"
-    email_address = "dg.tauzin@whims-services.com"
+    email_address = "dtauzin.ext@simplon.co"
   }
 }
 
