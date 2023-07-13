@@ -1,16 +1,23 @@
 ---
-- set_fact: adminpass={{ hostvars['DUMMY_HOST1']['adminpass'] }}
-- set_fact: userpass={{ hostvars['DUMMY_HOST2']['userpass'] }}
+- set_fact: adminpass={{ hostvars['GHOST_HOST1']['adminpass'] }}
+- set_fact: userpass={{ hostvars['GHOST_HOST2']['userpass'] }}
+- name: "Upgrade all apt packages"
+  apt:
+    upgrade: yes
+    update_cache: yes
 - name: "Install mysql-client"
   apt:
     name: mysql-client
     state: present
 - name: "Use database"
-  command:
-      echo USE "{{ dbname }}"; | mysql -h "{{ hostdb }}" -u "{{ admindb }}" -p"{{ adminpass }}"
-- name: "Give privileges to user "
-  command:
-      echo GRANT ALL PRIVILEGES ON "{{ dbname }}".* TO "{{ userdb }}"@'%' WITH GRANT OPTION; | mysql -h "{{ hostdb }}" -u "{{ admindb }}" -p"{{ adminpass }}"
+  shell:
+      echo "USE {{ dbname }} ;" | mysql -h {{ hostdb }} -u {{ admindb }} -p{{ adminpass }}
+- name: "Create user"
+  shell:
+      echo "CREATE USER '{{ userdb }}' IDENTIFIED BY '{{ userpass }}';" | mysql -h {{ hostdb }} -u {{ admindb }} -p{{ adminpass }}
+- name: "Give privileges to user"
+  shell:
+      echo "GRANT ALL PRIVILEGES ON {{ dbname }}.* TO '{{ userdb }}'@'%' WITH GRANT OPTION;" | mysql -h {{ hostdb }} -u {{ admindb }} -p{{ adminpass }}
 - name: "Flush privileges"
-  command:
-      echo FLUSH PRIVILEGES; | mysql -h "{{ hostdb }}" -u "{{ admindb }}" -p"{{ adminpass }}"    
+  shell:
+      echo "FLUSH PRIVILEGES;" | mysql -h {{ hostdb }} -u {{ admindb }} -p{{ adminpass }}

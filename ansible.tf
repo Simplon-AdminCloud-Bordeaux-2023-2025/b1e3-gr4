@@ -46,7 +46,7 @@ resource "null_resource" "config_wikijs" {
     command     = <<EOT
     echo "---" >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
     echo "vaultname: "${azurerm_key_vault.keyVault.name}"" >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
-    echo "vaultsecretname: "${azurerm_key_vault_secret.passworddatabase.name}"" >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
+    echo "vaultsecretname: "${azurerm_key_vault_secret.passworddatabaseuser.name}"" >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
     echo "tenantid: ${data.azurerm_client_config.current.tenant_id}" >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
     echo " " >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
     echo "hostdb: ${azurerm_mariadb_server.dbserver.fqdn}"  >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
@@ -76,7 +76,7 @@ resource "null_resource" "adduser" {
     echo "tenantid: ${data.azurerm_client_config.current.tenant_id}" >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
     echo " " >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
     echo "hostdb: ${azurerm_mariadb_server.dbserver.fqdn}"  >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
-    echo "userdb: ${local.dbuser}@${azurerm_mariadb_server.dbserver.name}"  >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
+    echo "userdb: ${local.dbuser}"  >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
     echo "admindb: ${local.dbserveradmin}@${azurerm_mariadb_server.dbserver.name}"  >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
     echo "dbname: ${azurerm_mariadb_database.database.name}"  >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml
     EOT
@@ -96,11 +96,14 @@ resource "null_resource" "mountshare" {
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<EOT
-    echo "---" >> ./ansibleplaybooks/mountshare/roles/defaults/main.yml;
-    echo "mountpoint: /wikijs" >> ./ansibleplaybooks/mountshare/roles/defaults/main.yml;
-    echo "username: ${azurerm_storage_share.share.name}" >> ./ansibleplaybooks/mountshare/roles/defaults/main.yml;
-    echo "share_name: ${azurerm_storage_share_directory.sharedirectory.name}" >> ./ansibleplaybooks/mountshare/roles/defaults/main.yml;
-    echo "password: pass" >> ./ansibleplaybooks/mountshare/roles/defaults/main.yml
-     EOT
+    echo "---" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo "vaultname: "${azurerm_key_vault.keyVault.name}"" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo "vaultsecretname: "${azurerm_key_vault_secret.filesharekey.name}"" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo "tenantid: ${data.azurerm_client_config.current.tenant_id}" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo " " >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo "mountpoint: /wikijs" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo "username: ${azurerm_storage_account.staccount.name}" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    echo "share_name: ${azurerm_storage_share.share.name}" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
+    EOT
   }
 }

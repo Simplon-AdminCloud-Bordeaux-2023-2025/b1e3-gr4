@@ -54,5 +54,5 @@ resource "azurerm_storage_blob" "blob" {
   storage_container_name = azurerm_storage_container.container.name
   content_type           = "image/jpg"
   type                   = "Block"
-  source                 = "./letsencrypt/random.jpg"
+  source                 = "./random.jpg"
 }

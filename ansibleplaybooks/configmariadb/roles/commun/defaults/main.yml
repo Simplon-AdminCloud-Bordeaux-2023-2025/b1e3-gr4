@@ -1,9 +1,8 @@
+---
 vaultname: nab-kv-316
 vaultsecretnameuser: wikijsdbuser
-vaultsecretnameadmin: mariadbadmin
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
 hostdb: nab-mariadb-server.mariadb.database.azure.com
 userdb: wikijsdbuser@nab-mariadb-server
-admindb: mariadbadmin@nab-mariadb-server
 dbname: wikijs
