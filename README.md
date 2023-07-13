@@ -28,7 +28,7 @@
 
 ##### Personnalisation requise #####
  
- * Vous devez personnaliser les noms des utilisateurs selon vos besoins ainsi que le chemin de voc slé SSH
+ * Vous devez personnaliser les noms des utilisateurs selon vos besoins ainsi que le chemin de vos clé SSH
 
 
  ##### Commande Ansible à exécuter : #####
