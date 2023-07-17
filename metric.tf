@@ -7,7 +7,6 @@ resource "azurerm_log_analytics_workspace" "workspace" {
   retention_in_days   = 30
 }
 
-
 # Création d'un classeur regroupant des métriques de la machine applicative, de la base de donnée et du compte de stockage
 resource "azurerm_application_insights_workbook" "workbook" {
   name                = "06f54e0a-1bfa-11ee-be56-0242ac120002"
@@ -21,7 +20,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
       {
         "type" : 1,
         "content" : {
-          "json" : "Metriques de la base de données, de la machine applicative et du compte de stockage."
+          "json" : "Metriques de la machine applicative, de la base de données et du compte de stockage."
         },
         "name" : "text - 0"
       },
@@ -35,7 +34,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
           "resourceType" : "microsoft.compute/virtualmachines",
           "metricScope" : 0,
           "resourceIds" : [
-            "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.Compute/virtualMachines/nab-vm-app"
+           "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.Compute/virtualMachines/sam-vm-app"
           ],
           "timeContext" : {
             "durationMs" : 3600000
@@ -91,35 +90,6 @@ resource "azurerm_application_insights_workbook" "workbook" {
         },
         "name" : "métrique - 2"
       },
-      {
-        "type" : 10,
-        "content" : {
-          "chartId" : "workbook6c43fe94-6262-4c2b-8238-638a0950af10",
-          "version" : "MetricsItem/2.0",
-          "size" : 0,
-          "chartType" : 2,
-          "resourceType" : "microsoft.storage/storageaccounts",
-          "metricScope" : 0,
-          "resourceIds" : [
-            "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.Storage/storageAccounts/samsmb340"
-          ],
-          "timeContext" : {
-            "durationMs" : 3600000
-          },
-          "metrics" : [
-            {
-              "namespace" : "microsoft.storage/storageaccounts",
-              "metric" : "microsoft.storage/storageaccounts-Capacity-UsedCapacity",
-              "aggregation" : 4,
-              "splitBy" : null
-            }
-          ],
-          "gridSettings" : {
-            "rowLimit" : 10000
-          }
-        },
-        "name" : "métrique - 3"
-      }
     ],
     "fallbackResourceIds" : [
       "c56aea2c-50de-4adc-9673-6a8008892c21"
@@ -161,21 +131,6 @@ resource "azurerm_monitor_diagnostic_setting" "db_monitoring" {
   }
 }
 
-# Activation de la surveillance de l'espace de stockage dans Azure Monitor
-# resource "azurerm_monitor_diagnostic_setting" "storage_monitoring" {
-#   name                       = "${local.prefixName}storage-monitoring"
-#   target_resource_id         = azurerm_storage_account.staccount.id
-#   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
-#   metric {
-#     category = "AllMetrics"
-#     enabled  = true
-
-#     retention_policy {
-#       enabled = true
-#       days    = 365
-#     }
-#   }
-# }
 
 
 # Création d'une alerte en cas d'indisponibilité de l'application
@@ -204,6 +159,34 @@ QUERY
     action_group = [azurerm_monitor_action_group.notification_group.id]
   }
 }
+
+# Création d'une alerte si la date d'expiration du certificat TLS est inférieure à 7 jours
+# resource "azurerm_monitor_metric_alert" "certificate_expiry_alert" {
+#   name                = "${local.prefixName}certificate-expiry-alert"
+#   resource_group_name = data.azurerm_resource_group.rg.name
+#   description         = "Alert when TLS certificate expiry is less than 7 days"
+#   severity            = 2
+
+#   scopes = [azurerm_linux_virtual_machine.app.id]
+
+#   criteria {
+#     metric_namespace = "Microsoft.Security/certificates"
+#     metric_name      = "Certificate Expiry Date"
+#     aggregation      = "Maximum"
+#     operator         = "LessThan"
+#     threshold        = 7
+
+#     dimension {
+#       name     = "certificateName"
+#       operator = "Include"
+#       values   = ["certificategr4"]
+#     }
+#   }
+
+#   action {
+#     action_group_id = azurerm_monitor_action_group.notification_group.id
+#   }
+# }
 
 # Création d'une alerte si l'utilisation du CPU dépasse 90% sur la machine virtuelle d'application
 resource "azurerm_monitor_metric_alert" "cpu_usage_alert" {
@@ -258,7 +241,7 @@ resource "azurerm_monitor_action_group" "notification_group" {
 
   email_receiver {
     name          = "email-julie"
-    email_address = "email@example.com"
+    email_address = "jpaillusseau.ext@simplon.co"
   }
   email_receiver {
     name          = "email-dom"
