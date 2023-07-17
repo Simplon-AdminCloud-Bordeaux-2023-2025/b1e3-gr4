@@ -1,0 +1,11 @@
+---
+- name: Get access key from keyvault
+  shell: az keyvault secret show --name "{{ vaultsecretname }}" --vault-name "{{ vaultname }}" --query value -o tsv
+  args:
+    executable: /usr/bin/bash
+  register: result
+
+- name: Register ghost host with variable
+  add_host:
+    name: "GHOST_HOST"
+    accesskey: "{{ result.stdout }}"

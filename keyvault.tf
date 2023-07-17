@@ -1,5 +1,5 @@
 resource "azurerm_key_vault" "keyVault" {
-  name                     = "${local.prefixName}kv-${random_integer.random.result}"
+  name                     = "${local.prefixName}-kv-${random_integer.random.result}"
   location                 = data.azurerm_resource_group.rg.location
   resource_group_name      = data.azurerm_resource_group.rg.name
   tenant_id                = data.azurerm_client_config.current.tenant_id
@@ -56,5 +56,30 @@ resource "azurerm_key_vault_secret" "filesharekey" {
   value        = azurerm_storage_account.staccount.primary_access_key
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
 }
+
+resource "azurerm_key_vault_secret" "containerkey" {
+  key_vault_id = azurerm_key_vault.keyVault.id
+  name         = "${azurerm_storage_account.staccount2.name}-accessKey"
+  value        = azurerm_storage_account.staccount2.primary_access_key
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+}
+
+# resource "azurerm_key_vault_certificate" "certificatwikijs" {
+#   name         = "wikijscertificat"
+#   key_vault_id = azurerm_key_vault.keyVault.id
+#   depends_on   = [azurerm_key_vault_access_policy.terraform_user, null_resource.playbookchallengehttp]
+#   certificate {
+#     contents = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
+#     password = "challengepassword"
+#   }
+    # lifetime_action {
+    #   action {
+    #     action_type = "EmailContacts"
+    #   }
+    #   trigger {
+    #     days_before_expiry = 7
+    #   }
+    # }
+# }
 
 

@@ -1,0 +1,49 @@
+---
+- set_fact: accesskeycontainer={{ hostvars['GHOST_HOST']['accesskey'] }}
+- name: "Upgrade all apt packages"
+  apt:
+    upgrade: yes
+    update_cache: yes
+- name: "Install blobfuse"
+  shell: |
+      wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+      dpkg -i packages-microsoft-prod.deb
+      apt-get -y update 
+      apt-get -y install libfuse3-dev fuse3
+      apt-get -y install blobfuse2
+      mkdir /mnt/resource/blobfuse2tmp -p
+      chown {{ username }} /mnt/resource/blobfuse2tmp
+      mkdir chall_letsencrypt
+
+- name: "Copy config.yaml"
+  ansible.builtin.copy: 
+    src: config.yaml
+    dest: config.yaml
+
+- name: "Edit config.yaml : Change account name"
+  replace:
+    path: ./config.yaml
+    regexp: '^(\s*)account-name: mystorageaccount'
+    replace: '\1account-name: {{ storage_name }}'
+
+- name: "Edit config.yaml : Change key value"
+  replace:
+    path: ./config.yaml
+    regexp: '^(\s*)account-key: mystoragekey'
+    replace: '\1account-key: {{ accesskeycontainer }}'
+
+- name: "Edit config.yaml : Change endpoint value"
+  replace:
+    path: ./config.yaml
+    regexp: '^(\s*)endpoint: https://mystorageaccount.blob.core.windows.net'
+    replace: '\1endpoint: https://{{ storage_name }}.blob.core.windows.net'
+
+- name: "Edit config.yaml : Change container name"
+  replace:
+    path: ./config.yaml
+    regexp: '^(\s*)container: mycontainer'
+    replace: '\1container: {{ container_name }}'
+
+- name: "Mount container"
+  shell: 
+    blobfuse2 mount ./chall_letsencrypt --config-file=./config.yaml

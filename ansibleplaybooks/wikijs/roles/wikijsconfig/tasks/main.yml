@@ -2,36 +2,61 @@
 - set_fact: dbpass={{ hostvars['GHOST_HOST']['dbpass'] }}
 - name: Edit port config.yml
   ansible.builtin.lineinfile:
-    path: ./wiki/config.yml
+    path: /var/wiki/config.yml
     regexp: '^port: 3000'
     line: 'port: 80'
 - name: Edit db config.yml
   replace:
-    path: ./wiki/config.yml
+    path: /var/wiki/config.yml
     regexp: '^(\s*)type: postgres'
     replace: '\1type: mariadb'
 - name: Edit host config.yml
   replace:
-    path: ./wiki/config.yml
+    path: /var/wiki/config.yml
     regexp: '^(\s*)host: localhost'
     replace: '\1host: {{ hostdb }}'
 - name: Edit db port config.yml
   replace:
-    path: ./wiki/config.yml
+    path: /var/wiki/config.yml
     regexp: '^(\s*)port: 5432'
     replace: '\1port: 3306'
 - name: Edit db user config.yml
   replace:
-    path: ./wiki/config.yml
+    path: /var/wiki/config.yml
     regexp: '^(\s*)user: wikijs'
     replace: '\1user: {{ userdb }}'
 - name: Edit dbpassword config.yml
   replace:
-    path: ./wiki/config.yml
+    path: /var/wiki/config.yml
     regexp: '^(\s*)pass: wikijsrocks'
     replace: '\1pass: {{ dbpass }}'
 - name: Edit db name config.yml
   replace:
-    path: ./wiki/config.yml
+    path: /var/wiki/config.yml
     regexp: '^(\s*)db: wiki'
     replace: '\1db: {{ dbname }}'
+- name: Enabling ssl config.yml
+  replace:
+    path: /var/wiki/config.yml
+    regexp: '^(\s*)enabled: false'
+    replace: '\1enabled: true'
+- name: Setting HTTPS port config.yml
+  replace:
+    path: /var/wiki/config.yml
+    regexp: '^(\s*)port: 3443'
+    replace: '\1port: 443'
+- name: Changing cert format config.yml
+  replace:
+    path: /var/wiki/config.yml
+    regexp: '^(\s*)format: pem'
+    replace: '\1format: pfx'
+- name: Changing cert path config.yml
+  replace:
+    path: /var/wiki/config.yml
+    regexp: '^(\s*)pfx: path/to/cert.pfx'
+    replace: '\1pfx: /etc/letsencrypt/live/{{ dns }}/cert.pfx'
+- name: Changing passphrase config.yml
+  replace:
+    path: /var/wiki/config.yml
+    regexp: '^(\s*)passphrase: null'
+    replace: '\1passphrase: challengepassword'

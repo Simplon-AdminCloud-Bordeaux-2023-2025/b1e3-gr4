@@ -1,0 +1,43 @@
+---
+- name : "Install certbot"
+  shell: |
+    snap install core; sudo snap refresh core
+    snap install --classic certbot
+    apt update
+
+- name: "Create validation directory"
+  shell:
+    mkdir validation
+
+- name: "Create auth file"
+  shell: |
+    mkdir auth
+    echo "#!/bin/bash" >> ./auth/auth-host.sh
+    echo " " >> ./auth/auth-host.sh
+    echo "echo \$CERTBOT_VALIDATION > ./validation/\$CERTBOT_TOKEN" >> ./auth/auth-host.sh
+    echo "sudo cp ./validation/\$CERTBOT_TOKEN ./chall_letsencrypt/.well-known/acme-challenge/" >> ./auth/auth-host.sh
+    chmod +x ./auth/auth-host.sh
+
+- name: "Create cleanup file"
+  shell: |
+    mkdir cleanup
+    echo "#!/bin/bash" >> ./cleanup/cleanup-host.sh
+    echo " " >> ./cleanup/cleanup-host.sh
+    echo "rm -f ./chall_letsencrypt/.well-known/acme-challenge/\$CERTBOT_TOKEN" >> ./cleanup/cleanup-host.sh
+    echo "rm -f ./validation/$CERTBOT_TOKEN" >> ./cleanup/cleanup-host.sh
+    chmod +x ./cleanup/cleanup-host.sh
+
+- name: "Almost done - Run certbot challenge"
+  shell:
+    sudo certbot certonly --manual --preferred-challenges=http --manual-auth-hook ./auth/auth-host.sh --manual-cleanup-hook ./cleanup/cleanup-host.sh -d {{ dns }} --agree-tos --server https://acme-v02.api.letsencrypt.org/directory --register-unsafely-without-email
+
+- name: "Almost done - Convert PEM to PFX"
+  shell:
+    sudo openssl pkcs12 -inkey /etc/letsencrypt/live/{{ dns }}/privkey.pem -in /etc/letsencrypt/live/{{ dns }}/cert.pem -certfile /etc/letsencrypt/live/{{ dns }}/chain.pem -export -out /etc/letsencrypt/live/{{ dns }}/cert.pfx -password pass:challengepassword  
+
+- name: "Import certificate"
+  ansible.builtin.fetch: 
+    src: /etc/letsencrypt/live/{{ dns }}/cert.pfx
+    dest: cert.pfx
+    flat: true
+

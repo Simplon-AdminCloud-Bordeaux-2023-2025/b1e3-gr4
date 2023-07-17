@@ -1,24 +1,27 @@
 locals {
-  backend_address_pool_name      = "${azurerm_virtual_network.Vnet.name}-beap"
-  frontend_port_name_http        = "${azurerm_virtual_network.Vnet.name}-feport-http"
-  frontend_port_name_https       = "${azurerm_virtual_network.Vnet.name}-feport-https"
-  frontend_ip_configuration_name = "${azurerm_virtual_network.Vnet.name}-feip"
-  http_setting_name              = "${azurerm_virtual_network.Vnet.name}-be-htst"
-  listener_name                  = "${azurerm_virtual_network.Vnet.name}-httplstn"
-  request_routing_rule_name      = "${azurerm_virtual_network.Vnet.name}-rqrt"
-  redirect_configuration_name    = "${azurerm_virtual_network.Vnet.name}-rdrcfg"
+  backend_address_pool_name       = "${local.prefixName}-beap"
+  frontend_port_name_http         = "${local.prefixName}-feport-http"
+  frontend_port_name_https        = "${local.prefixName}-feport-https"
+  frontend_ip_configuration_name  = "${local.prefixName}-feip"
+  http_setting_name               = "${local.prefixName}-be-http-st"
+  http_listener_name              = "${local.prefixName}-http-lstn"
+  https_listener_name             = "${local.prefixName}-https-lstn"
+  http_request_routing_rule_name  = "${local.prefixName}-http-rqrt"
+  https_request_routing_rule_name = "${local.prefixName}-https-rqrt"
+  redirect_configuration_name     = "${local.prefixName}-rdrcfg"
 }
 
+#Create app gateway subnet
 resource "azurerm_subnet" "gatewayfront" {
-  name                 = "${local.prefixName}sn-gw"
+  name                 = "${local.prefixName}-sn-gw"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.Vnet.name
   address_prefixes     = ["10.1.2.0/24"]
 }
 
-
+#Create app gateway 
 resource "azurerm_application_gateway" "gw" {
-  name                = "${local.prefixName}gw"
+  name                = "${local.prefixName}-gw"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
 
@@ -64,7 +67,7 @@ resource "azurerm_application_gateway" "gw" {
   }
 
   http_listener {
-    name                           = local.listener_name
+    name                           = local.http_listener_name
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
     frontend_port_name             = local.frontend_port_name_http
     protocol                       = "Http"
@@ -72,9 +75,9 @@ resource "azurerm_application_gateway" "gw" {
   }
 
   request_routing_rule {
-    name               = local.request_routing_rule_name
+    name               = local.http_request_routing_rule_name
     rule_type          = "PathBasedRouting"
-    http_listener_name = local.listener_name
+    http_listener_name = local.http_listener_name
     priority           = 100
     url_path_map_name  = "pathmap"
   }
@@ -94,9 +97,33 @@ resource "azurerm_application_gateway" "gw" {
   redirect_configuration {
     name                 = "pathmap"
     redirect_type        = "Permanent"
-    target_url           = "https://${azurerm_storage_account.staccount2.name}.blob.core.windows.net/${azurerm_storage_container.container.name}/${azurerm_storage_blob.blob.name}"
-    include_path         = false
+    target_url           = "https://${azurerm_storage_account.staccount2.name}.blob.core.windows.net/${azurerm_storage_container.container.name}"
+    include_path         = true
     include_query_string = false
   }
-}
 
+  #ssl_certificate {
+   # name     = "certificat"
+    #data     = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
+    #password = "challengepassword"
+  #}
+
+
+  #http_listener {
+   # name                           = local.https_listener_name
+    #ssl_certificate_name           = "certificat"
+    #frontend_ip_configuration_name = local.frontend_ip_configuration_name
+    #frontend_port_name             = local.frontend_port_name_https
+    #protocol                       = "Https"
+    #host_name                      = azurerm_public_ip.ipApp.fqdn
+  #}
+
+  #request_routing_rule {
+   # name                       = local.https_request_routing_rule_name
+    #rule_type                  = "Basic"
+    #http_listener_name         = local.https_listener_name
+    #priority                   = 50
+    #backend_http_settings_name = local.http_setting_name
+    #backend_address_pool_name  = local.backend_address_pool_name
+  #}
+}

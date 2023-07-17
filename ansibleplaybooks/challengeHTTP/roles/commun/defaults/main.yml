@@ -1,0 +1,9 @@
+---
+vaultname: ill-kv-66
+vaultsecretname: illstct662-accessKey
+tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
+ 
+username: nabila
+storage_name: illstct662
+container_name: ill-ct
+dns: ill-app.westeurope.cloudapp.azure.com

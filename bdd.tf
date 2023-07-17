@@ -1,6 +1,6 @@
 #Create Mariadb server
 resource "azurerm_mariadb_server" "dbserver" {
-  name                = "${local.prefixName}mariadb-server"
+  name                = "${local.prefixName}-mariadb-server"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
 
@@ -30,27 +30,13 @@ resource "azurerm_mariadb_database" "database" {
 
 #Create db subnet with a delegation to MicrosoftSQL 
 resource "azurerm_subnet" "dbsubnet" {
-  name                                      = "${local.prefixName}subnet-mariadb"
+  name                                      = "${local.prefixName}-subnet-mariadb"
   resource_group_name                       = data.azurerm_resource_group.rg.name
   virtual_network_name                      = azurerm_virtual_network.Vnet.name
   address_prefixes                          = ["10.1.3.0/24"]
   service_endpoints                         = ["Microsoft.Sql"]
   private_endpoint_network_policies_enabled = "true"
-  delegation {
-    name = "delegation"
-    service_delegation {
-      name = "Microsoft.DBforMySQL/servers"
-    }
-  }
 }
-
-#Allow communication between dbserver and subnet
-#resource "azurerm_mariadb_virtual_network_rule" "subnetasso" {
-#name                = "${local.prefixName}mariadb-vnet-rule"
-#resource_group_name = data.azurerm_resource_group.rg.name
-#server_name         = azurerm_mariadb_server.dbserver.name
-#subnet_id           = azurerm_subnet.dbsubnet.id
-#}
 
 #Create private dns zone
 resource "azurerm_private_dns_zone" "dnszone" {
@@ -60,7 +46,7 @@ resource "azurerm_private_dns_zone" "dnszone" {
 
 #Create a link between private dns zone and virtual network
 resource "azurerm_private_dns_zone_virtual_network_link" "vnetlink" {
-  name                  = "${local.prefixName}dnsvnetlink"
+  name                  = "${local.prefixName}-dnsvnetlink"
   resource_group_name   = data.azurerm_resource_group.rg.name
   private_dns_zone_name = azurerm_private_dns_zone.dnszone.name
   virtual_network_id    = azurerm_virtual_network.Vnet.id
@@ -68,7 +54,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vnetlink" {
 
 #Create endpoint
 resource "azurerm_private_endpoint" "pep" {
-  name                = "${local.prefixName}pep"
+  name                = "${local.prefixName}-pep"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   subnet_id           = azurerm_subnet.Subnet.id
@@ -93,7 +79,7 @@ data "azurerm_private_endpoint_connection" "private-ip" {
 
 #Create private dns record in the private dns zone
 resource "azurerm_private_dns_a_record" "dnsrecord" {
-  name                = "${local.prefixName}privdnsrecdb"
+  name                = "${local.prefixName}-privdnsrecdb"
   zone_name           = azurerm_private_dns_zone.dnszone.name
   resource_group_name = data.azurerm_resource_group.rg.name
   ttl                 = 300
