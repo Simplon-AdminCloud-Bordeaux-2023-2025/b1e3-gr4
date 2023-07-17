@@ -103,27 +103,27 @@ resource "azurerm_application_gateway" "gw" {
   }
 
   #ssl_certificate {
-   # name     = "certificat"
-    #data     = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
-    #password = "challengepassword"
+  # name     = "certificat"
+  #data     = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
+  #password = "challengepassword"
   #}
 
 
   #http_listener {
-   # name                           = local.https_listener_name
-    #ssl_certificate_name           = "certificat"
-    #frontend_ip_configuration_name = local.frontend_ip_configuration_name
-    #frontend_port_name             = local.frontend_port_name_https
-    #protocol                       = "Https"
-    #host_name                      = azurerm_public_ip.ipApp.fqdn
+  # name                           = local.https_listener_name
+  #ssl_certificate_name           = "certificat"
+  #frontend_ip_configuration_name = local.frontend_ip_configuration_name
+  #frontend_port_name             = local.frontend_port_name_https
+  #protocol                       = "Https"
+  #host_name                      = azurerm_public_ip.ipApp.fqdn
   #}
 
   #request_routing_rule {
-   # name                       = local.https_request_routing_rule_name
-    #rule_type                  = "Basic"
-    #http_listener_name         = local.https_listener_name
-    #priority                   = 50
-    #backend_http_settings_name = local.http_setting_name
-    #backend_address_pool_name  = local.backend_address_pool_name
+  # name                       = local.https_request_routing_rule_name
+  #rule_type                  = "Basic"
+  #http_listener_name         = local.https_listener_name
+  #priority                   = 50
+  #backend_http_settings_name = local.http_setting_name
+  #backend_address_pool_name  = local.backend_address_pool_name
   #}
 }

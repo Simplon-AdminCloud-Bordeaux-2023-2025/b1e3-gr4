@@ -64,22 +64,14 @@ resource "azurerm_key_vault_secret" "containerkey" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
 }
 
-# resource "azurerm_key_vault_certificate" "certificatwikijs" {
-#   name         = "wikijscertificat"
-#   key_vault_id = azurerm_key_vault.keyVault.id
-#   depends_on   = [azurerm_key_vault_access_policy.terraform_user, null_resource.playbookchallengehttp]
-#   certificate {
-#     contents = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
-#     password = "challengepassword"
-#   }
-    # lifetime_action {
-    #   action {
-    #     action_type = "EmailContacts"
-    #   }
-    #   trigger {
-    #     days_before_expiry = 7
-    #   }
-    # }
-# }
+resource "azurerm_key_vault_certificate" "certificatwikijs" {
+  name         = "wikijscertificat"
+  key_vault_id = azurerm_key_vault.keyVault.id
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  certificate {
+    contents = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
+    password = "challengepassword"
+  }
+}
 
 
