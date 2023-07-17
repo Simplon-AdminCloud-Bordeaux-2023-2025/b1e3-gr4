@@ -1,3 +1,0 @@
----
-- name: Sending cert to key vault 
-  shell: az keyvault certificate import --file ./challengeHTTP/roles/cert1.pfx --name certificatwiki --vault-name "{{ vaultname }}" --password challengepassword
