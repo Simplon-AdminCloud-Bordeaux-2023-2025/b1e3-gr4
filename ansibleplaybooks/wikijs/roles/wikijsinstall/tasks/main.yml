@@ -1,7 +1,7 @@
 ---
 - name: "create wikijs directory"
   command:
-    mkdir wiki
+    mkdir /var/wiki
 
 - name: "download wikijs archive"
   command:
@@ -9,17 +9,17 @@
 
 - name: "uncompress wikijs archive"
   command:
-    tar xzf wiki-js.tar.gz -C ./wiki
+    tar xzf wiki-js.tar.gz -C /var/wiki
 
 - name: "Copy file with new name"
   ansible.builtin.copy:
     remote_src: true
-    src: "./wiki/config.sample.yml"
-    dest: "./wiki/config.yml"
+    src: "/var/wiki/config.sample.yml"
+    dest: "/var/wiki/config.yml"
 
 - name: "Remove old file"
   ansible.builtin.file:
-    path: "./wiki/config.sample.yml"
+    path: "/var/wiki/config.sample.yml"
     state: absent
 
 - name: "Upgrade all apt packages"

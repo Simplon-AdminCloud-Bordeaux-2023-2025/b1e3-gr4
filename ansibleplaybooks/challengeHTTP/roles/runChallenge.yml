@@ -1,0 +1,25 @@
+---
+- name: "Get Azure info"
+  hosts: localhost
+  roles:
+    - role: localhostinfo
+
+- name: "Challenge Accepted - Step 1"
+  hosts: app
+  become: true
+  roles:
+    - role: "Step1"
+
+- name: "Challenge Accepted - Step 2"
+  hosts: app
+  become: true
+  roles:
+    - role: "Step2"
+
+- name: "Challenge Accepted - Step 3"
+  hosts: app
+  become: true
+  roles:
+    - role: "cleanup"
+
+

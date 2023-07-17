@@ -1,0 +1,7 @@
+---
+- name : "Crime scene cleanup"
+  shell: |
+    umount ./chall_letsencrypt
+    rm -rf packages-microsoft-prod.deb auth config.yaml validation chall_letsencrypt cleanup
+
+

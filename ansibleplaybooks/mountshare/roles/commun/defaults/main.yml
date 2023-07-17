@@ -1,8 +1,8 @@
 ---
-vaultname: nab-kv-99
-vaultsecretname: nabsmb99-accessKey
+vaultname: ill-kv-66
+vaultsecretname: illstsmb66-accessKey
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
 mountpoint: /wikijs
-username: nabsmb99
-share_name: nab-share-wikijs
+username: illstsmb66
+share_name: ill-share-wikijs

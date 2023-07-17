@@ -1,15 +1,15 @@
 # Create Bastion public IP
 resource "azurerm_public_ip" "ipBastion" {
-  name                = "${local.prefixName}ip-Bastion"
+  name                = "${local.prefixName}-ip-Bastion"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   allocation_method   = "Static"
-  domain_name_label   = "${local.prefixName}bastion"
+  domain_name_label   = "${local.prefixName}-bastion"
 }
 
 #Create Bastion nic
 resource "azurerm_network_interface" "nicBastion" {
-  name                    = "${local.prefixName}nic-bastion"
+  name                    = "${local.prefixName}-nic-bastion"
   location                = data.azurerm_resource_group.rg.location
   resource_group_name     = data.azurerm_resource_group.rg.name
   internal_dns_name_label = "bastion"
@@ -31,7 +31,7 @@ resource "azurerm_network_interface_security_group_association" "nicnsgbastion" 
 
 # Create bastion virtual machine
 resource "azurerm_linux_virtual_machine" "bastion" {
-  name                  = "${local.prefixName}vm-bastion"
+  name                  = "${local.prefixName}-vm-bastion"
   location              = data.azurerm_resource_group.rg.location
   resource_group_name   = data.azurerm_resource_group.rg.name
   admin_username        = local.user
@@ -39,7 +39,7 @@ resource "azurerm_linux_virtual_machine" "bastion" {
   network_interface_ids = [azurerm_network_interface.nicBastion.id]
 
   os_disk {
-    name                 = "${local.prefixName}OsDisk-bastion"
+    name                 = "${local.prefixName}-OsDisk-bastion"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }
@@ -60,17 +60,17 @@ resource "azurerm_linux_virtual_machine" "bastion" {
 
 # Create App public IP
 resource "azurerm_public_ip" "ipApp" {
-  name                = "${local.prefixName}ip-App"
+  name                = "${local.prefixName}-ip-App"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
-  domain_name_label   = "${local.prefixName}app"
+  domain_name_label   = "${local.prefixName}-app"
 }
 
 #Create App nic
 resource "azurerm_network_interface" "nicApp" {
-  name                    = "${local.prefixName}nic-app"
+  name                    = "${local.prefixName}-nic-app"
   location                = data.azurerm_resource_group.rg.location
   resource_group_name     = data.azurerm_resource_group.rg.name
   internal_dns_name_label = "app"
@@ -91,7 +91,7 @@ resource "azurerm_network_interface_security_group_association" "nicnsgapp" {
 
 # Create app virtual machine
 resource "azurerm_linux_virtual_machine" "app" {
-  name                  = "${local.prefixName}vm-app"
+  name                  = "${local.prefixName}-vm-app"
   location              = data.azurerm_resource_group.rg.location
   resource_group_name   = data.azurerm_resource_group.rg.name
   admin_username        = local.user
@@ -99,7 +99,7 @@ resource "azurerm_linux_virtual_machine" "app" {
   network_interface_ids = [azurerm_network_interface.nicApp.id]
 
   os_disk {
-    name                 = "${local.prefixName}OsDisk-app"
+    name                 = "${local.prefixName}-OsDisk-app"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }

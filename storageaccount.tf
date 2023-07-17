@@ -1,6 +1,6 @@
 #Create first storage account-used to add a file share to the app VM
 resource "azurerm_storage_account" "staccount" {
-  name                     = "nabsmb${random_integer.random.result}"
+  name                     = "${local.prefixName}stsmb${random_integer.random.result}"
   resource_group_name      = data.azurerm_resource_group.rg.name
   location                 = data.azurerm_resource_group.rg.location
   account_tier             = "Standard"
@@ -14,21 +14,21 @@ resource "azurerm_storage_account" "staccount" {
 
 #Create file share storage
 resource "azurerm_storage_share" "share" {
-  name                 = "${local.prefixName}share-wikijs"
+  name                 = "${local.prefixName}-share-wikijs"
   storage_account_name = azurerm_storage_account.staccount.name
   quota                = 5
 }
 
 #Create file share directory
 resource "azurerm_storage_share_directory" "sharedirectory" {
-  name                 = "${local.prefixName}directory-wikijs"
+  name                 = "${local.prefixName}-directory-wikijs"
   share_name           = azurerm_storage_share.share.name
   storage_account_name = azurerm_storage_account.staccount.name
 }
 
 #Create second storage account-used for certificate with let's encrypt
 resource "azurerm_storage_account" "staccount2" {
-  name                          = "nabsmb${random_integer.random.result}2"
+  name                          = "${local.prefixName}stct${random_integer.random.result}2"
   resource_group_name           = data.azurerm_resource_group.rg.name
   location                      = data.azurerm_resource_group.rg.location
   account_tier                  = "Standard"
@@ -43,7 +43,7 @@ resource "azurerm_storage_account" "staccount2" {
 
 #Create container
 resource "azurerm_storage_container" "container" {
-  name                  = "${local.prefixName}ct"
+  name                  = "${local.prefixName}-ct"
   storage_account_name  = azurerm_storage_account.staccount2.name
   container_access_type = "blob"
 }

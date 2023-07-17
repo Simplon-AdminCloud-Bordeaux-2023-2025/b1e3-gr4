@@ -1,16 +1,9 @@
 #Gestion du fichier inventory.ini
-resource "null_resource" "rminventory" {
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = "rm -f ./ansibleplaybooks/inventory.ini"
-  }
-}
-
 resource "null_resource" "inventory" {
-  depends_on = [null_resource.rminventory]
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<EOT
+    rm -f ./ansibleplaybooks/inventory.ini;
     echo "[bastion]" >> ./ansibleplaybooks/inventory.ini;
     echo ${azurerm_public_ip.ipBastion.ip_address}>> ./ansibleplaybooks/inventory.ini;
     echo " " >> ./ansibleplaybooks/inventory.ini;
@@ -32,18 +25,11 @@ resource "null_resource" "inventory" {
 }
 
 #Gestion du playbook config_wikijs
-resource "null_resource" "rmconfig_wikijs" {
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = "rm -f ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml"
-  }
-}
-
 resource "null_resource" "config_wikijs" {
-  depends_on = [null_resource.rmconfig_wikijs]
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<EOT
+    rm -f ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
     echo "---" >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
     echo "vaultname: "${azurerm_key_vault.keyVault.name}"" >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
     echo "vaultsecretname: "${azurerm_key_vault_secret.passworddatabaseuser.name}"" >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
@@ -51,25 +37,19 @@ resource "null_resource" "config_wikijs" {
     echo " " >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
     echo "hostdb: ${azurerm_mariadb_server.dbserver.fqdn}"  >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
     echo "userdb: ${local.dbuser}@${azurerm_mariadb_server.dbserver.name}"  >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
-    echo "dbname: ${azurerm_mariadb_database.database.name}"  >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml
+    echo "dbname: ${azurerm_mariadb_database.database.name}"  >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml;
+    echo "dns: ${azurerm_public_ip.ipApp.fqdn}" >> ./ansibleplaybooks/wikijs/roles/commun/defaults/main.yml
     EOT
   }
 }
 
-#Gestion du playbook adduser
-resource "null_resource" "rmadduser" {
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = "rm -f ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml"
-  }
-}
-
+#Gestion du playbook configmariadb
 resource "null_resource" "adduser" {
-  depends_on = [null_resource.rmadduser]
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<EOT
-    echo "---" >> ./ansibleplaybooks/configmariadb/roles/defaults/main.yml;
+    rm -f ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
+    echo "---" >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
     echo "vaultname: "${azurerm_key_vault.keyVault.name}"" >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
     echo "vaultsecretnameuser: "${azurerm_key_vault_secret.passworddatabaseuser.name}"" >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
     echo "vaultsecretnameadmin: "${azurerm_key_vault_secret.passworddatabase.name}"" >> ./ansibleplaybooks/configmariadb/roles/commun/defaults/main.yml;
@@ -84,18 +64,11 @@ resource "null_resource" "adduser" {
 }
 
 #Gestion du playbook mountshare
-resource "null_resource" "rmmountshare" {
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = "rm -f ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml"
-  }
-}
-
 resource "null_resource" "mountshare" {
-  depends_on = [null_resource.rmmountshare]
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<EOT
+    rm -f ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
     echo "---" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
     echo "vaultname: "${azurerm_key_vault.keyVault.name}"" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
     echo "vaultsecretname: "${azurerm_key_vault_secret.filesharekey.name}"" >> ./ansibleplaybooks/mountshare/roles/commun/defaults/main.yml;
@@ -107,3 +80,30 @@ resource "null_resource" "mountshare" {
     EOT
   }
 }
+
+
+#Gestion du playbook ChallengeHTTP
+resource "null_resource" "challengehttp" {
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<EOT
+    rm -f ./ansibleplaybooks/challengeHTTP/roles/commun/defaults/main.yml;
+    echo "---" >> ./ansibleplaybooks/challengeHTTP/roles/commun/defaults/main.yml;
+    echo "vaultname: "${azurerm_key_vault.keyVault.name}"" >> ./ansibleplaybooks/challengeHTTP/roles/commun/defaults/main.yml;
+    echo "vaultsecretname: "${azurerm_key_vault_secret.containerkey.name}"" >> ./ansibleplaybooks/challengeHTTP/roles/commun/defaults/main.yml;
+    echo "tenantid: ${data.azurerm_client_config.current.tenant_id}" >> ./ansibleplaybooks/challengeHTTP/roles/commun/defaults/main.yml;
+    echo " " >> ./ansibleplaybooks/challengeHTTP/roles/commun/defaults/main.yml;
+    echo "username: ${local.user}" >> ./ansibleplaybooks/challengeHTTP/roles/commun/defaults/main.yml;
+    echo "storage_name: ${azurerm_storage_account.staccount2.name}" >> ./ansibleplaybooks/challengeHTTP/roles/commun/defaults/main.yml;
+    echo "container_name: ${azurerm_storage_container.container.name}" >> ./ansibleplaybooks/challengeHTTP/roles/commun/defaults/main.yml;
+    echo "dns: ${azurerm_public_ip.ipApp.fqdn}" >> ./ansibleplaybooks/challengeHTTP/roles/commun/defaults/main.yml;
+    EOT
+  }
+}
+
+# resource "null_resource" "playbookchallengehttp" {
+#   depends_on = [null_resource.challengehttp, null_resource.inventory]
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ./ansibleplaybooks/inventory.ini ./ansibleplaybooks/challengeHTTP/roles/runChallenge.yml"
+#   }
+# } 
