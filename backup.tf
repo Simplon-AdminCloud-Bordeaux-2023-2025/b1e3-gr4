@@ -39,20 +39,6 @@ resource "azurerm_backup_protected_file_share" "share1" {
   }
 }
 
-resource "azurerm_backup_policy_vm" "backup-policy-vm" {
-  name                = "tfex-recovery-vault-policy-vm"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  recovery_vault_name = azurerm_recovery_services_vault.vault.name
-
-  backup {
-    frequency = "Daily"
-    time      = "09:30"
-  }
-
-  retention_daily {
-    count = 10
-  }
-}
 
 
 
