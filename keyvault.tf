@@ -64,14 +64,42 @@ resource "azurerm_key_vault_secret" "containerkey" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
 }
 
-resource "azurerm_key_vault_certificate" "certificatwikijs" {
-  name         = "wikijscertificat"
-  key_vault_id = azurerm_key_vault.keyVault.id
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
-  certificate {
-    contents = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
-    password = "challengepassword"
-  }
-}
+# data "local_file" cert {
+#   filename = "./ansibleplaybooks/challengeHTTP/roles/cert.pfx"
+#   depends_on = [null_resource.playbookchallengehttp]
+# }
+
+# resource "azurerm_key_vault_certificate" "certificatwikijs" {
+#   name         = "wikicert"
+#   key_vault_id = azurerm_key_vault.keyVault.id
+#   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+#   certificate {
+#     contents = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
+#     password = "challengepassword"
+#   }
+#   certificate_policy {
+#     issuer_parameters {
+#       name = "Unknown"
+#     }
+#     lifetime_action {
+#       action {
+#         action_type = "EmailContacts"
+#       }
+#       trigger {
+#         days_before_expiry = 7
+#       }
+#     }
+#     secret_properties {
+#       content_type = "application/x-pkcs12"
+#     }
+#     key_properties {
+#       curve      = "P-256"
+#       exportable = true
+#       key_size   = 256
+#       key_type   = "EC"
+#       reuse_key  = true
+#     }
+#   }
+# }
 
 

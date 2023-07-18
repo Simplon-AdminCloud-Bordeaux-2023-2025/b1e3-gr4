@@ -1,0 +1,14 @@
+[Unit]
+Description=Wiki.js
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/node server
+Restart=no
+User=root
+Environment=NODE_ENV=production
+WorkingDirectory=/var/wiki
+
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,6 @@
 ---
 - hosts: all
+  become: true
   tasks:
     - name: Create nabR user
       user:
@@ -30,6 +31,7 @@
         key: "{{ lookup('file', './sam.pub') }}"
 
 - hosts: all
+  become: true
   tasks:
     - name: Create sudo group
       ansible.builtin.group:

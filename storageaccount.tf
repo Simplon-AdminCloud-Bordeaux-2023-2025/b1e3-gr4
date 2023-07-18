@@ -1,6 +1,6 @@
 #Create first storage account-used to add a file share to the app VM
 resource "azurerm_storage_account" "staccount" {
-  name                     = "${local.prefixName}stsmb${random_integer.random.result}"
+  name                     = replace("${local.prefixName}stsmb${random_integer.random.result}", "-", "")
   resource_group_name      = data.azurerm_resource_group.rg.name
   location                 = data.azurerm_resource_group.rg.location
   account_tier             = "Standard"
@@ -28,7 +28,7 @@ resource "azurerm_storage_share_directory" "sharedirectory" {
 
 #Create second storage account-used for certificate with let's encrypt
 resource "azurerm_storage_account" "staccount2" {
-  name                          = "${local.prefixName}stct${random_integer.random.result}2"
+  name                          = replace("${local.prefixName}stct${random_integer.random.result}", "-", "")
   resource_group_name           = data.azurerm_resource_group.rg.name
   location                      = data.azurerm_resource_group.rg.location
   account_tier                  = "Standard"

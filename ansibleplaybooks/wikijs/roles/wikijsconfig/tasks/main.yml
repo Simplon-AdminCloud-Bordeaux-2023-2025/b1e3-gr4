@@ -60,3 +60,17 @@
     path: /var/wiki/config.yml
     regexp: '^(\s*)passphrase: null'
     replace: '\1passphrase: challengepassword'
+- name: Changing datapath config.yml
+  ansible.builtin.lineinfile:
+    path: /var/wiki/config.yml
+    regexp: 'dataPath: ./data'
+    line: 'dataPath: /wikijs/b1e3-gr4-directory-wikijs'
+- name: "Copy wiki.service file"
+  ansible.builtin.copy: 
+    src: wiki.service
+    dest: /etc/systemd/system/wiki.service
+- name: "Run service"
+  shell: |
+    systemctl daemon-reload
+    systemctl start wiki
+    systemctl enable wiki

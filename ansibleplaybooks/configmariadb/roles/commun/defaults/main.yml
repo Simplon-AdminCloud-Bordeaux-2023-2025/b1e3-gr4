@@ -1,9 +1,10 @@
 ---
-vaultname: ill-kv-66
+vaultname: b1e3-gr4-kv-427
 vaultsecretnameuser: wikijsdbuser
+vaultsecretnameadmin: mariadbadmin
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
-hostdb: ill-mariadb-server.mariadb.database.azure.com
+hostdb: b1e3-gr4-mariadb-server.mariadb.database.azure.com
 userdb: wikijsdbuser
-admindb: mariadbadmin@ill-mariadb-server
+admindb: mariadbadmin@b1e3-gr4-mariadb-server
 dbname: wikijs

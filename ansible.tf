@@ -19,7 +19,7 @@ resource "null_resource" "inventory" {
     echo "ansible_port = 22" >> ./ansibleplaybooks/inventory.ini;
     echo "ansible_user="${local.user}"">> ./ansibleplaybooks/inventory.ini;
     echo "ansible_ssh_private_key_file="${local.path_to_private_key}"" >> ./ansibleplaybooks/inventory.ini;
-    echo ansible_ssh_common_args=\'-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -q ${local.user}@${azurerm_public_ip.ipBastion.ip_address}\"\' >> ./ansibleplaybooks/inventory.ini
+    echo ansible_ssh_common_args=\'-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -o StrictHostKeyChecking=no -W %h:%p -q ${local.user}@${azurerm_public_ip.ipBastion.ip_address}\"\' >> ./ansibleplaybooks/inventory.ini
     EOT
   }
 }
@@ -102,7 +102,7 @@ resource "null_resource" "challengehttp" {
 }
 
 # resource "null_resource" "playbookchallengehttp" {
-#   depends_on = [null_resource.challengehttp, null_resource.inventory]
+#   depends_on = [null_resource.challengehttp, null_resource.inventory, azurerm_linux_virtual_machine.bastion, azurerm_linux_virtual_machine.app]
 #   provisioner "local-exec" {
 #     command = "ansible-playbook -i ./ansibleplaybooks/inventory.ini ./ansibleplaybooks/challengeHTTP/roles/runChallenge.yml"
 #   }

@@ -22,7 +22,3 @@
   roles:
     - role: "cleanup"
 
-- name: "Import certificate to keyvault"
-  hosts: localhost
-  roles:
-    - role: importcert

@@ -1,8 +1,8 @@
 ---
-vaultname: ill-kv-66
-vaultsecretname: illstsmb66-accessKey
+vaultname: b1e3-gr4-kv-427
+vaultsecretname: b1e3gr4stsmb427-accessKey
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
 mountpoint: /wikijs
-username: illstsmb66
-share_name: ill-share-wikijs
+username: b1e3gr4stsmb427
+share_name: b1e3-gr4-share-wikijs
