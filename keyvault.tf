@@ -1,3 +1,4 @@
+#Create key vault
 resource "azurerm_key_vault" "keyVault" {
   name                     = "${local.prefixName}-kv-${random_integer.random.result}"
   location                 = data.azurerm_resource_group.rg.location
@@ -8,8 +9,10 @@ resource "azurerm_key_vault" "keyVault" {
 
 }
 
+#Get current azure user informations
 data "azurerm_client_config" "current" {}
 
+#Create access policy for current user
 resource "azurerm_key_vault_access_policy" "terraform_user" {
   key_vault_id = azurerm_key_vault.keyVault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
@@ -28,6 +31,7 @@ resource "azurerm_key_vault_access_policy" "terraform_user" {
   ]
 }
 
+#Create access policy for other user
 resource "azurerm_key_vault_access_policy" "other_user" {
   key_vault_id = azurerm_key_vault.keyVault.id
   tenant_id    = "a2e466aa-4f86-4545-b5b8-97da7c8febf3"
@@ -46,7 +50,7 @@ resource "azurerm_key_vault_access_policy" "other_user" {
   ]
 }
 
-
+#Add
 resource "azurerm_key_vault_secret" "ssh_public_key" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = "ssh-public"
@@ -54,6 +58,7 @@ resource "azurerm_key_vault_secret" "ssh_public_key" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 }
 
+#Add random generated password for database server administrator to key vault
 resource "azurerm_key_vault_secret" "passworddatabase" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = local.dbserveradmin
@@ -61,6 +66,7 @@ resource "azurerm_key_vault_secret" "passworddatabase" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 }
 
+#Add random generated password for database user to key vault
 resource "azurerm_key_vault_secret" "passworddatabaseuser" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = local.dbuser
@@ -68,6 +74,7 @@ resource "azurerm_key_vault_secret" "passworddatabaseuser" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 }
 
+#Add storage account (smb) access key to key vault - will be retrieved by ansibleplaybooks
 resource "azurerm_key_vault_secret" "filesharekey" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = "${azurerm_storage_account.staccount.name}-accessKey"
@@ -75,6 +82,7 @@ resource "azurerm_key_vault_secret" "filesharekey" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 }
 
+#Add storage account (blob) access key to key vault - will be retrieved by ansibleplaybooks
 resource "azurerm_key_vault_secret" "containerkey" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = "${azurerm_storage_account.staccount2.name}-accessKey"
@@ -82,7 +90,7 @@ resource "azurerm_key_vault_secret" "containerkey" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 }
 
-
+#Add application certificate to key vault with alert rule 
 # resource "azurerm_key_vault_certificate" "certificatwikijs" {
 #   name         = "wikicert"
 #   key_vault_id = azurerm_key_vault.keyVault.id

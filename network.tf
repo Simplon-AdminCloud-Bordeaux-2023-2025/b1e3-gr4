@@ -1,12 +1,15 @@
+#Get resource group information
 data "azurerm_resource_group" "rg" {
   name = "b1e3-gr4"
 }
 
+#Generate random number - used to make sure storage account and key vault have unique names
 resource "random_integer" "random" {
   min = 10
   max = 500
 }
 
+#Generate password for database server administrator
 resource "random_password" "dbpass" {
   length      = 16
   min_lower   = 4
@@ -15,6 +18,7 @@ resource "random_password" "dbpass" {
   min_numeric = 3
 }
 
+#Generate password for database user
 resource "random_password" "dbpassuser" {
   length      = 16
   min_lower   = 4
@@ -23,6 +27,7 @@ resource "random_password" "dbpassuser" {
   min_numeric = 3
 }
 
+#Generic variables
 locals {
   ipSpace = ["10.1.0.0/16"]
   # prefixName          = data.azurerm_resource_group.rg.name
@@ -42,7 +47,7 @@ resource "azurerm_virtual_network" "Vnet" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-# Create subnet
+# Create VM subnet
 resource "azurerm_subnet" "Subnet" {
   name                                      = "${local.prefixName}-subnet-VM"
   address_prefixes                          = ["10.1.1.0/24"]

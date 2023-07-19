@@ -48,6 +48,7 @@ resource "azurerm_storage_container" "container" {
   container_access_type = "blob"
 }
 
+#Create blob with a random image
 resource "azurerm_storage_blob" "blob" {
   name                   = ".well-known/acme-challenge/random.jpg"
   storage_account_name   = azurerm_storage_account.staccount2.name

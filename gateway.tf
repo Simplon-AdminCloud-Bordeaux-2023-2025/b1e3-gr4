@@ -1,3 +1,4 @@
+#Gateway local variables
 locals {
   backend_address_pool_name       = "${local.prefixName}-beap"
   frontend_port_name_http         = "${local.prefixName}-feport-http"
