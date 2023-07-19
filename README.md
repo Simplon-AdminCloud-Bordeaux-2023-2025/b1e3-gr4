@@ -52,4 +52,8 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 >
   `ansible-playbook -i inventory.ini ./addusers/create-user.yml`
 
+## Finalisation de l'installation
+
+* Rendez-vous sur le lien : https://mydomain-wikijs.westeurope.cloudapp.azure.com pour créer votre compte administrateur WikiJS
+
 
