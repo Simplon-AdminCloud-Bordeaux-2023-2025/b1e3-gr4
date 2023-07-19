@@ -18,7 +18,7 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 
 * Dans le fichier network.tf, sur le bloc locals, adaptez les variables à vos informations personnelles.
 
-* Pour l'ajout d'administrateurs, personnalisez le fichier ./ansibleplaybooks/addusers/create-user.yml et ajoutez les clés publiques des nouveaux utilisateurs dans le même dossier.
+* Pour l'ajout d'administrateurs sur les VM, personnalisez le fichier ./ansibleplaybooks/addusers/create-user.yml et ajoutez les clés publiques des nouveaux utilisateurs dans le même dossier.
 
 ## Déploiement avec Terraform : ##
 
@@ -40,7 +40,7 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 >
                 ansible-playbook -i inventory.ini ./challengeHTTP/roles/runChallenge.yml
 
-* Dans les fichiers gateway.tf et keyvault.tf, décommentez les lignes 106 à 129 et 94 à 125, puis répéter les étapes 2 et 3.
+* Dans les fichiers gateway.tf et keyvault.tf, décommentez les lignes 106 à 129 et 94 à 125, puis répétez les étapes 2 et 3.
 
 ## Lancement des playbooks pour l'installation de l'application sur la VM application (depuis le dossier ansibleplaybooks) 
 >
