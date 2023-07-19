@@ -18,6 +18,8 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 
 * Dans le fichier network.tf, sur le bloc locals, adaptez les variables à vos informations personnelles.
 
+* Pour l'ajout d'administrateurs, personnalisez le fichier ./ansibleplaybooks/addusers/create-user.yml et ajoutez les clés publiques des nouveaux utilisateurs dans le même dossier.
+
 ## Déploiement avec Terraform : ##
 
 * Etape 1 : Initialisez le backend Terraform
