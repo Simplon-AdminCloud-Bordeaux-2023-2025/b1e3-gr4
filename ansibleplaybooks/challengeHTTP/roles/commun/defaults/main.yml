@@ -1,9 +1,9 @@
 ---
-vaultname: b1e3-gr4-kv-427
-vaultsecretname: b1e3gr4stct427-accessKey
+vaultname: samnab-kv-265
+vaultsecretname: samnabstct265-accessKey
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
 username: nabila
-storage_name: b1e3gr4stct427
-container_name: b1e3-gr4-ct
-dns: b1e3-gr4-app.westeurope.cloudapp.azure.com
+storage_name: samnabstct265
+container_name: samnab-ct
+dns: samnab-app.westeurope.cloudapp.azure.com

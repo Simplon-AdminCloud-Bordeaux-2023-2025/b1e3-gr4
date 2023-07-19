@@ -102,8 +102,36 @@ resource "null_resource" "challengehttp" {
 }
 
 # resource "null_resource" "playbookchallengehttp" {
-#   depends_on = [null_resource.challengehttp, null_resource.inventory, azurerm_linux_virtual_machine.bastion, azurerm_linux_virtual_machine.app]
+#   depends_on = [azurerm_application_gateway.gw, null_resource.challengehttp, null_resource.inventory, azurerm_linux_virtual_machine.bastion, azurerm_linux_virtual_machine.app]
 #   provisioner "local-exec" {
 #     command = "ansible-playbook -i ./ansibleplaybooks/inventory.ini ./ansibleplaybooks/challengeHTTP/roles/runChallenge.yml"
+#   }
+# }
+
+# resource "null_resource" "playbookconfigmariadb" {
+#   depends_on = [null_resource.playbookchallengehttp, null_resource.adduser]
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ./ansibleplaybooks/inventory.ini ./ansibleplaybooks/configmariadb/roles/adduserwikijsdb.yml"
+#   }
+# }
+
+# resource "null_resource" "playbookmountshare" {
+#   depends_on = [null_resource.playbookconfigmariadb, null_resource.mountshare]
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ./ansibleplaybooks/inventory.ini ./ansibleplaybooks/mountshare/roles/mountshare.yml"
+#   }
+# }
+
+# resource "null_resource" "playbookwikijs" {
+#   depends_on = [null_resource.playbookmountshare, null_resource.config_wikijs]
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ./ansibleplaybooks/inventory.ini ./ansibleplaybooks/wikijs/roles/installwikijs.yml"
+#   }
+# }
+
+# resource "null_resource" "addusers" {
+#   depends_on = [null_resource.playbookwikijs]
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ./ansibleplaybooks/inventory.ini ./ansibleplaybooks/addusers/create-user.yml"
 #   }
 # } 

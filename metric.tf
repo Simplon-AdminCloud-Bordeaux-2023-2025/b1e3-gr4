@@ -1,6 +1,6 @@
 # Création du workspace Azure Monitor
 resource "azurerm_log_analytics_workspace" "workspace" {
-  name                = "${local.prefixName}monitoring-workspace"
+  name                = "${local.prefixName}-monitoring-workspace"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   sku                 = "PerGB2018"
@@ -22,7 +22,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
   display_name        = "workbook1"
-  source_id           = "c56aea2c-50de-4adc-9673-6a8008892c21"
+  source_id           = data.azurerm_client_config.current.subscription_id
   data_json = jsonencode({
     "version" : "Notebook/1.0",
     "items" : [
@@ -43,7 +43,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
           "resourceType" : "microsoft.compute/virtualmachines",
           "metricScope" : 0,
           "resourceIds" : [
-           "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.Compute/virtualMachines/b1e3-gr4-vm-app"
+            "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${data.azurerm_resource_group.rg.name}/providers/Microsoft.Compute/virtualMachines/${azurerm_linux_virtual_machine.app.name}"
           ],
           "timeContext" : {
             "durationMs" : 3600000
@@ -79,7 +79,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
           "resourceType" : "microsoft.DBforMariaDB/servers"
           "metricScope" : 0,
           "resourceIds" : [
-           "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.DBforMariaDB/servers/b1e3-gr4-mariadb-server"
+            "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${data.azurerm_resource_group.rg.name}/providers/Microsoft.DBforMariaDB/servers/${azurerm_mariadb_server.dbserver.name}"
           ],
           "timeContext" : {
             "durationMs" : 1800000
@@ -109,7 +109,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
           "resourceType" : "microsoft.storage/storageaccounts",
           "metricScope" : 0,
           "resourceIds" : [
-            "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.Storage/storageAccounts/b1e3gr4stsmb427"
+            "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${data.azurerm_resource_group.rg.name}/providers/Microsoft.Storage/storageAccounts/${azurerm_storage_account.staccount.name}"
           ],
           "timeContext" : {
             "durationMs" : 3600000
@@ -130,7 +130,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
       }
     ],
     "fallbackResourceIds" : [
-      "c56aea2c-50de-4adc-9673-6a8008892c21"
+      data.azurerm_client_config.current.subscription_id
     ],
     "$schema" : "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
   })
@@ -139,14 +139,14 @@ resource "azurerm_application_insights_workbook" "workbook" {
 
 # Activation de la surveillance de la machine virtuelle dans Azure Monitor
 resource "azurerm_monitor_diagnostic_setting" "vm_monitoring" {
-  name                       = "${local.prefixName}vm-monitoring"
+  name                       = "${local.prefixName}-vm-monitoring"
   target_resource_id         = azurerm_linux_virtual_machine.app.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
-  
-  
+
+
   metric {
     category = "AllMetrics"
-    
+
 
     retention_policy {
       enabled = false
@@ -156,11 +156,11 @@ resource "azurerm_monitor_diagnostic_setting" "vm_monitoring" {
 
 # Activation de la surveillance de la base de données MariaDB dans Azure Monitor
 resource "azurerm_monitor_diagnostic_setting" "db_monitoring" {
-  name                       = "${local.prefixName}db-monitoring"
+  name                       = "${local.prefixName}-db-monitoring"
   target_resource_id         = azurerm_mariadb_server.dbserver.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
- 
-    metric {
+
+  metric {
     category = "AllMetrics"
 
     retention_policy {
@@ -171,7 +171,7 @@ resource "azurerm_monitor_diagnostic_setting" "db_monitoring" {
 
 # Activation de la surveillance de l'espace de stockage dans Azure Monitor
 resource "azurerm_monitor_diagnostic_setting" "storage_monitoring" {
-  name                       = "${local.prefixName}storage-monitoring"
+  name                       = "${local.prefixName}-storage-monitoring"
   target_resource_id         = azurerm_storage_account.staccount.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
   metric {
@@ -188,7 +188,7 @@ resource "azurerm_monitor_diagnostic_setting" "storage_monitoring" {
 
 # Création d'une alerte en cas d'indisponibilité de l'application
 resource "azurerm_monitor_scheduled_query_rules_alert" "app_unavailability_alert" {
-  name                = "${local.prefixName}app-unavailability-alert"
+  name                = "${local.prefixName}-app-unavailability-alert"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
   description         = "Alert when application is unavailable"
@@ -215,7 +215,7 @@ QUERY
 
 # Création d'une alerte si l'utilisation du CPU dépasse 90% sur la machine virtuelle d'application
 resource "azurerm_monitor_metric_alert" "cpu_usage_alert" {
-  name                = "${local.prefixName}cpu-usage-alert"
+  name                = "${local.prefixName}-cpu-usage-alert"
   resource_group_name = data.azurerm_resource_group.rg.name
   description         = "Alert when CPU usage exceeds 90%"
   severity            = 2
@@ -237,7 +237,7 @@ resource "azurerm_monitor_metric_alert" "cpu_usage_alert" {
 
 # Création d'une alerte si l'espace disponible sur l'espace de stockage est inférieur à 10%
 resource "azurerm_monitor_metric_alert" "storage_space_alert" {
-  name                = "${local.prefixName}storage-space-alert"
+  name                = "${local.prefixName}-storage-space-alert"
   resource_group_name = data.azurerm_resource_group.rg.name
   description         = "Alert when storage space is less than 10%"
   frequency           = "PT1H"
@@ -245,7 +245,7 @@ resource "azurerm_monitor_metric_alert" "storage_space_alert" {
   scopes              = [azurerm_storage_account.staccount.id]
 
   criteria {
-     metric_namespace = "Microsoft.Storage/storageAccounts"
+    metric_namespace = "Microsoft.Storage/storageAccounts"
     metric_name      = "UsedCapacity"
     aggregation      = "Average"
     operator         = "GreaterThan"

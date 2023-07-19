@@ -28,51 +28,65 @@ resource "azurerm_key_vault_access_policy" "terraform_user" {
   ]
 }
 
+resource "azurerm_key_vault_access_policy" "other_user" {
+  key_vault_id = azurerm_key_vault.keyVault.id
+  tenant_id    = "a2e466aa-4f86-4545-b5b8-97da7c8febf3"
+  object_id    = "0a4b1439-ad32-4cc4-8867-8f91b8f7bc49"
+
+  secret_permissions = [
+    "Delete", "Get", "Purge", "Recover", "Restore", "Set", "List", "Backup"
+  ]
+
+  certificate_permissions = [
+    "Delete", "Get", "Purge", "Recover", "Restore", "SetIssuers", "List", "Backup", "Import"
+  ]
+
+  key_permissions = [
+    "Delete", "Get", "Purge", "Recover", "Restore", "Create", "List", "Backup", "Import", "Decrypt", "Encrypt"
+  ]
+}
+
 
 resource "azurerm_key_vault_secret" "ssh_public_key" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = "ssh-public"
   value        = local.ssh_pub_key
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 }
 
 resource "azurerm_key_vault_secret" "passworddatabase" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = local.dbserveradmin
   value        = random_password.dbpass.result
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 }
 
 resource "azurerm_key_vault_secret" "passworddatabaseuser" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = local.dbuser
   value        = random_password.dbpassuser.result
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 }
 
 resource "azurerm_key_vault_secret" "filesharekey" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = "${azurerm_storage_account.staccount.name}-accessKey"
   value        = azurerm_storage_account.staccount.primary_access_key
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 }
 
 resource "azurerm_key_vault_secret" "containerkey" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = "${azurerm_storage_account.staccount2.name}-accessKey"
   value        = azurerm_storage_account.staccount2.primary_access_key
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 }
 
-# data "local_file" cert {
-#   filename = "./ansibleplaybooks/challengeHTTP/roles/cert.pfx"
-#   depends_on = [null_resource.playbookchallengehttp]
-# }
 
 # resource "azurerm_key_vault_certificate" "certificatwikijs" {
 #   name         = "wikicert"
 #   key_vault_id = azurerm_key_vault.keyVault.id
-#   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+#   depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
 #   certificate {
 #     contents = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
 #     password = "challengepassword"

@@ -24,8 +24,9 @@ resource "random_password" "dbpassuser" {
 }
 
 locals {
-  ipSpace             = ["10.1.0.0/16"]
-  prefixName          = data.azurerm_resource_group.rg.name
+  ipSpace = ["10.1.0.0/16"]
+  # prefixName          = data.azurerm_resource_group.rg.name
+  prefixName          = "samnab"
   path_to_private_key = "~/.ssh/terraform_key"
   ssh_pub_key         = file("~/.ssh/terraform_key.pub")
   user                = "nabila"

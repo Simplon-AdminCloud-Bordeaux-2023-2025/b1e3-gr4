@@ -1,8 +1,8 @@
 ---
-vaultname: b1e3-gr4-kv-427
-vaultsecretname: b1e3gr4stsmb427-accessKey
+vaultname: samnab-kv-265
+vaultsecretname: samnabstsmb265-accessKey
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
 mountpoint: /wikijs
-username: b1e3gr4stsmb427
-share_name: b1e3-gr4-share-wikijs
+username: samnabstsmb265
+share_name: samnab-share-wikijs

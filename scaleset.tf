@@ -27,8 +27,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "scaleset" {
     name    = azurerm_network_interface.nicApp.name
     primary = true
     ip_configuration {
-      name      = "internal"
-      subnet_id = azurerm_subnet.Subnet.id
+      name                                         = "internal"
+      subnet_id                                    = azurerm_subnet.Subnet.id
       application_gateway_backend_address_pool_ids = azurerm_application_gateway.gw.backend_address_pool[*].id
     }
   }

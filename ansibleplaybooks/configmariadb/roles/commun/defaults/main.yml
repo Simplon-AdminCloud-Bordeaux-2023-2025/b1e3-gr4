@@ -1,10 +1,10 @@
 ---
-vaultname: b1e3-gr4-kv-427
+vaultname: samnab-kv-265
 vaultsecretnameuser: wikijsdbuser
 vaultsecretnameadmin: mariadbadmin
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
-hostdb: b1e3-gr4-mariadb-server.mariadb.database.azure.com
+hostdb: samnab-mariadb-server.mariadb.database.azure.com
 userdb: wikijsdbuser
-admindb: mariadbadmin@b1e3-gr4-mariadb-server
+admindb: mariadbadmin@samnab-mariadb-server
 dbname: wikijs
