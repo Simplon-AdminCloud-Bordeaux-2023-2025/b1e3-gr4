@@ -22,21 +22,21 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 
 * Etape 1 : Initialisez le backend Terraform
 >
-                                cd b1e3-gr4
+                                                           cd b1e3-gr4
 >
-                               terraform init
+                                                          terraform init
 
 * Etape 2 : Planifiez les ressources à déployer
 >
-                               terraform plan
+                                                          terraform plan
 
 * Etape 3 : Appliquez le plan pour créer les ressources
 >
-                               terraform apply
+                                                          terraform apply
 
 * Une fois le déploiement terminé, lancer le playbook challenge HTTP pour générer le certificat (depuis le dossier ansibleplaybooks) :
 >
-    ansible-playbook -i inventory.ini ./challengeHTTP/roles/runChallenge.yml
+                             ansible-playbook -i inventory.ini ./challengeHTTP/roles/runChallenge.yml
 
 * Dans les fichiers gateway.tf et keyvault.tf, décommentez les lignes 106 à 129 et 94 à 125, puis répéter les étapes 2 et 3.
 
