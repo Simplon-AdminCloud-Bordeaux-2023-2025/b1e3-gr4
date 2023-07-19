@@ -4,7 +4,7 @@
 
 ## Conditions d'utilisation ##
 >
-* Ce dépôt regroupe plusieurs fichiers qui permettent l'automatisation d'un déploiement de l'application WikiJS.
+Ce dépôt regroupe plusieurs fichiers qui permettent l'automatisation d'un déploiement de l'application WikiJS.
 Les fichiers utilisent les langages suivants :
 -	Az CLI
 -	Terraform 
@@ -14,24 +14,32 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 
 ## Personnalisation du déploiement ##
 
-* Commencez par récupérer le dépôt `git clone git@github.com:Simplon-AdminCloud-Bordeaux-2023-2025/b1e3-gr4.git``
+* Commencez par récupérer le dépôt `git clone git@github.com:Simplon-AdminCloud-Bordeaux-2023-2025/b1e3-gr4.git`.
 
 * Dans le fichier network.tf, sur le bloc locals, adaptez les variables à vos informations personnelles.
 
 ## Déploiement avec Terraform : ##
 
-* Initialisez le backend Terraform :
-``` cd b1e3-gr4 ```
-  ```terraform init ```
+* Étape 1 : Initialisez le backend Terraform
+>
+`cd b1e3-gr4`
+>
+`terraform init`
 
-*  Planifiez les ressources à déployer :
-``` terraform plan ```
+* Étape 2 : Planifiez les ressources à déployer
+>
+`terraform plan`
 
-* Appliquez le plan pour créer les ressources :
- ``` terraform apply ```
+* Étape 3 : Appliquez le plan pour créer les ressources
+>
+ `terraform apply`
 
+* Une fois le déploiement terminé, lancer le playbook challenge HTTP pour générer le certificat (depuis le dossier ansibleplaybooks)  :
+`ansible-playbook -i inventory.ini ./challengeHTTP/roles/runChallenge.yml`
 
-## Lancement des playbooks (depuis le dossier ansibleplaybooks) 
+* Dans les fichiers gateway.tf et keyvault.tf, décommentez les lignes 106 à 129 et 94 à 125, puis répéter les étapes 2 et 3.
+
+## Lancement des playbooks pour l'installation de l'application sur la VM application (depuis le dossier ansibleplaybooks) 
 >
 `ansible-playbook -i inventory.ini  ./mountshare/roles/mountshare.yml`
 >
@@ -39,14 +47,4 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 >
 `ansible-playbook -i inventory.ini  ./wikijs/roles/installwikijs.yml`
 >
->
 
-
-
-## Finaliser le lancement de l'application
->
-Se connecter en ssh au serveur d'application
->
-Depuis le dossier ~/wiki, lancer la commande
-`sudo node server`\
-Attendre que le message indiquant que le site est disponible s'affiche et s'y connecter avec un navigateur web
