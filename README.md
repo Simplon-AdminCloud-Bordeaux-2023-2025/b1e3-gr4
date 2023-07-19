@@ -26,7 +26,7 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 >
                                               cd b1e3-gr4
 >
-                                            terraform init
+                                            terraform init -upgrade
 
 * Etape 2 : Planifiez les ressources à déployer
 >
