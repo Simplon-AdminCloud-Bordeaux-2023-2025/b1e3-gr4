@@ -22,9 +22,9 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 
 * Etape 1 : Initialisez le backend Terraform
 >
-                                                           cd b1e3-gr4
+                                              cd b1e3-gr4
 >
-                                                          terraform init
+                                            terraform init
 
 * Etape 2 : Planifiez les ressources à déployer
 >
