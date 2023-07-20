@@ -43,7 +43,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
           "resourceType" : "microsoft.compute/virtualmachines",
           "metricScope" : 0,
           "resourceIds" : [
-            "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.Compute/virtualMachines/sam-vm-app"
+            "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${data.azurerm_resource_group.rg.name}/providers/Microsoft.Compute/virtualMachines/${azurerm_linux_virtual_machine.app.name}"
           ],
           "timeContext" : {
             "durationMs" : 3600000
@@ -79,7 +79,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
           "resourceType" : "microsoft.DBforMariaDB/servers"
           "metricScope" : 0,
           "resourceIds" : [
-            "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.DBforMariaDB/servers/sam-mariadb-server"
+            "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${data.azurerm_resource_group.rg.name}/providers/Microsoft.DBforMariaDB/servers/${azurerm_mariadb_server.dbserver.name}"
           ],
           "timeContext" : {
             "durationMs" : 1800000
@@ -99,6 +99,35 @@ resource "azurerm_application_insights_workbook" "workbook" {
         },
         "name" : "métrique - 2"
       },
+      {
+        "type" : 10,
+        "content" : {
+          "chartId" : "workbook6c43fe94-6262-4c2b-8238-638a0950af10",
+          "version" : "MetricsItem/2.0",
+          "size" : 0,
+          "chartType" : 2,
+          "resourceType" : "microsoft.storage/storageaccounts",
+          "metricScope" : 0,
+          "resourceIds" : [
+            "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${data.azurerm_resource_group.rg.name}/providers/Microsoft.Storage/storageAccounts/${azurerm_storage_account.staccount.name}"
+          ],
+          "timeContext" : {
+            "durationMs" : 3600000
+          },
+          "metrics" : [
+            {
+              "namespace" : "microsoft.storage/storageaccounts",
+              "metric" : "microsoft.storage/storageaccounts-Capacity-UsedCapacity",
+              "aggregation" : 4,
+              "splitBy" : null
+            }
+          ],
+          "gridSettings" : {
+            "rowLimit" : 10000
+          }
+        },
+        "name" : "métrique - 3"
+      }
     ],
     "fallbackResourceIds" : [
       data.azurerm_client_config.current.subscription_id
@@ -140,6 +169,21 @@ resource "azurerm_monitor_diagnostic_setting" "db_monitoring" {
   }
 }
 
+# Activation de la surveillance de l'espace de stockage dans Azure Monitor
+resource "azurerm_monitor_diagnostic_setting" "storage_monitoring" {
+  name                       = "${local.prefixName}-storage-monitoring"
+  target_resource_id         = azurerm_storage_account.staccount.id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
+  metric {
+    category = "AllMetrics"
+    enabled  = true
+
+    retention_policy {
+      enabled = true
+      days    = 365
+    }
+  }
+}
 
 
 # Création d'une alerte en cas d'indisponibilité de l'application
@@ -221,14 +265,13 @@ resource "azurerm_monitor_action_group" "notification_group" {
   short_name          = "NotifGroup"
 
   email_receiver {
-    name          = "email-julie"
-    email_address = "jpaillusseau.ext@simplon.co"
+    name          = "email-nabila"
+    email_address = "nrizki@simplonformations.onmicrosoft.com"
   }
   email_receiver {
     name          = "email-samantha"
     email_address = "moratasamantha@gmail.com"
   }
 }
-
 
 
