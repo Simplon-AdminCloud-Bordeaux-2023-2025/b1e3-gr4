@@ -12,11 +12,18 @@ resource "azurerm_key_vault" "keyVault" {
 #Get current azure user informations
 data "azurerm_client_config" "current" {}
 
+#Get Azure admin users informations
+data "azuread_user" "admin" {
+  for_each            = local.admin_users
+  user_principal_name = each.value
+}
+
 #Create access policy for current user
-resource "azurerm_key_vault_access_policy" "terraform_user" {
+resource "azurerm_key_vault_access_policy" "kvpolicy" {
+  for_each     = data.azuread_user.admin
   key_vault_id = azurerm_key_vault.keyVault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
+  object_id    = each.value.object_id
 
   secret_permissions = [
     "Delete", "Get", "Purge", "Recover", "Restore", "Set", "List", "Backup"
@@ -31,31 +38,13 @@ resource "azurerm_key_vault_access_policy" "terraform_user" {
   ]
 }
 
-#Create access policy for other user
-resource "azurerm_key_vault_access_policy" "other_user" {
-  key_vault_id = azurerm_key_vault.keyVault.id
-  tenant_id    = "a2e466aa-4f86-4545-b5b8-97da7c8febf3"
-  object_id    = "0a4b1439-ad32-4cc4-8867-8f91b8f7bc49"
-
-  secret_permissions = [
-    "Delete", "Get", "Purge", "Recover", "Restore", "Set", "List", "Backup"
-  ]
-
-  certificate_permissions = [
-    "Delete", "Get", "Purge", "Recover", "Restore", "SetIssuers", "List", "Backup", "Import"
-  ]
-
-  key_permissions = [
-    "Delete", "Get", "Purge", "Recover", "Restore", "Create", "List", "Backup", "Import", "Decrypt", "Encrypt"
-  ]
-}
 
 #Add random generated password for database server administrator to key vault
 resource "azurerm_key_vault_secret" "passworddatabase" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = local.dbserveradmin
   value        = random_password.dbpass.result
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
+  depends_on   = [azurerm_key_vault_access_policy.kvpolicy]
 }
 
 #Add random generated password for database user to key vault
@@ -63,7 +52,7 @@ resource "azurerm_key_vault_secret" "passworddatabaseuser" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = local.dbuser
   value        = random_password.dbpassuser.result
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
+  depends_on   = [azurerm_key_vault_access_policy.kvpolicy]
 }
 
 #Add storage account (smb) access key to key vault - will be retrieved by ansibleplaybooks
@@ -71,7 +60,7 @@ resource "azurerm_key_vault_secret" "filesharekey" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = "${azurerm_storage_account.staccount.name}-accessKey"
   value        = azurerm_storage_account.staccount.primary_access_key
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
+  depends_on   = [azurerm_key_vault_access_policy.kvpolicy]
 }
 
 #Add storage account (blob) access key to key vault - will be retrieved by ansibleplaybooks
@@ -79,14 +68,14 @@ resource "azurerm_key_vault_secret" "containerkey" {
   key_vault_id = azurerm_key_vault.keyVault.id
   name         = "${azurerm_storage_account.staccount2.name}-accessKey"
   value        = azurerm_storage_account.staccount2.primary_access_key
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
+  depends_on   = [azurerm_key_vault_access_policy.kvpolicy]
 }
 
 #Add application certificate to key vault with alert rule 
 # resource "azurerm_key_vault_certificate" "certificatwikijs" {
 #   name         = "wikicert"
 #   key_vault_id = azurerm_key_vault.keyVault.id
-#   depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
+#   depends_on   = [azurerm_key_vault_access_policy.kvpolicy, azurerm_key_vault_access_policy.other_user]
 #   certificate {
 #     contents = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
 #     password = "challengepassword"

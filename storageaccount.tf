@@ -1,10 +1,10 @@
 #Create first storage account-used to add a file share to the app VM
 resource "azurerm_storage_account" "staccount" {
-  name                          = replace("${local.prefixName}stsmb${random_integer.random.result}", "-", "")
-  resource_group_name           = data.azurerm_resource_group.rg.name
-  location                      = data.azurerm_resource_group.rg.location
-  account_tier                  = "Standard"
-  account_replication_type      = "LRS"
+  name                     = replace("${local.prefixName}stsmb${random_integer.random.result}", "-", "")
+  resource_group_name      = data.azurerm_resource_group.rg.name
+  location                 = data.azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 }
 
 #Create file share storage

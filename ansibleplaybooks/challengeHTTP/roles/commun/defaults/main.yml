@@ -1,9 +1,9 @@
 ---
-vaultname: name-kv-59
-vaultsecretname: namestct59-accessKey
+vaultname: othername-kv-81
+vaultsecretname: othernamestct81-accessKey
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
 username: nabila
-storage_name: namestct59
-container_name: name-ct
-dns: name-wikijs.westeurope.cloudapp.azure.com
+storage_name: othernamestct81
+container_name: othername-ct
+dns: othername-wikijs.westeurope.cloudapp.azure.com

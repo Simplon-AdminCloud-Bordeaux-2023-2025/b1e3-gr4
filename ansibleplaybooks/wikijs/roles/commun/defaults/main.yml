@@ -1,9 +1,9 @@
 ---
-vaultname: name-kv-59
+vaultname: othername-kv-81
 vaultsecretname: wikijsdbuser
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
-hostdb: name-mariadb-server1.mariadb.database.azure.com
-userdb: wikijsdbuser@name-mariadb-server1
+hostdb: othername-mariadb-server.mariadb.database.azure.com
+userdb: wikijsdbuser@othername-mariadb-server
 dbname: wikijs
-dns: name-wikijs.westeurope.cloudapp.azure.com
+dns: othername-wikijs.westeurope.cloudapp.azure.com

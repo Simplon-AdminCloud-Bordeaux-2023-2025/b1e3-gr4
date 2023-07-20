@@ -42,7 +42,7 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 >
                 ansible-playbook -i inventory.ini ./challengeHTTP/roles/runChallenge.yml
 
-* Dans les fichiers gateway.tf et keyvault.tf, décommentez les lignes 106 à 129 et 86 à 117, puis répétez les étapes 2 et 3.
+* Dans les fichiers gateway.tf et keyvault.tf, décommentez les lignes 106 à 129 et 75 à 106, puis répétez les étapes 2 et 3.
 
 ## Lancement des playbooks pour l'installation de WikiJS sur la VM application (depuis le dossier ansibleplaybooks) 
 >

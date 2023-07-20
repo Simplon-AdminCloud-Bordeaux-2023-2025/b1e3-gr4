@@ -1,8 +1,8 @@
 ---
-vaultname: name-kv-59
-vaultsecretname: namestsmb59-accessKey
+vaultname: othername-kv-81
+vaultsecretname: othernamestsmb81-accessKey
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
 mountpoint: /wikijs
-username: namestsmb59
-share_name: name-share-wikijs
+username: othernamestsmb81
+share_name: othername-share-wikijs
