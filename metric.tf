@@ -43,7 +43,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
           "resourceType" : "microsoft.compute/virtualmachines",
           "metricScope" : 0,
           "resourceIds" : [
-           "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.Compute/virtualMachines/sam-vm-app"
+            "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.Compute/virtualMachines/sam-vm-app"
           ],
           "timeContext" : {
             "durationMs" : 3600000
@@ -79,7 +79,7 @@ resource "azurerm_application_insights_workbook" "workbook" {
           "resourceType" : "microsoft.DBforMariaDB/servers"
           "metricScope" : 0,
           "resourceIds" : [
-           "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.DBforMariaDB/servers/sam-mariadb-server"
+            "/subscriptions/c56aea2c-50de-4adc-9673-6a8008892c21/resourceGroups/b1e3-gr4/providers/Microsoft.DBforMariaDB/servers/sam-mariadb-server"
           ],
           "timeContext" : {
             "durationMs" : 1800000
@@ -201,7 +201,7 @@ resource "azurerm_monitor_metric_alert" "storage_space_alert" {
   scopes              = [azurerm_storage_account.staccount.id]
 
   criteria {
-     metric_namespace = "Microsoft.Storage/storageAccounts"
+    metric_namespace = "Microsoft.Storage/storageAccounts"
     metric_name      = "UsedCapacity"
     aggregation      = "Average"
     operator         = "GreaterThan"

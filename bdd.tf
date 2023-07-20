@@ -1,9 +1,8 @@
 #Create Mariadb server
 resource "azurerm_mariadb_server" "dbserver" {
-  name                = "${local.prefixName}-mariadb-server"
-  location            = data.azurerm_resource_group.rg.location
-  resource_group_name = data.azurerm_resource_group.rg.name
-
+  name                         = "${local.prefixName}-mariadb-server"
+  location                     = data.azurerm_resource_group.rg.location
+  resource_group_name          = data.azurerm_resource_group.rg.name
   administrator_login          = local.dbserveradmin
   administrator_login_password = random_password.dbpass.result
 

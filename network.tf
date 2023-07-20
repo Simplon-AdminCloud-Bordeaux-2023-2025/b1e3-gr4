@@ -53,11 +53,10 @@ resource "azurerm_virtual_network" "Vnet" {
 
 # Create VM subnet
 resource "azurerm_subnet" "Subnet" {
-  name                 = "${local.prefixName}-sn-VM"
-  address_prefixes     = ["10.1.1.0/24"]
-  resource_group_name  = data.azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.Vnet.name
-  # service_endpoints                         = ["Microsoft.Sql", "Microsoft.Storage"]
+  name                                      = "${local.prefixName}-sn-VM"
+  address_prefixes                          = ["10.1.1.0/24"]
+  resource_group_name                       = data.azurerm_resource_group.rg.name
+  virtual_network_name                      = azurerm_virtual_network.Vnet.name
   private_endpoint_network_policies_enabled = "true"
 }
 
