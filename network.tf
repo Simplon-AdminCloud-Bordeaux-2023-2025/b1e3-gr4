@@ -33,7 +33,7 @@ locals {
   # prefixName          = data.azurerm_resource_group.rg.name
   prefixName          = "othername"
   path_to_private_key = "~/.ssh/terraform_key"
-  ssh_pub_key         = file("~/.ssh/terraform_key.pub")
+  ssh_pub_key         = file("~/.ssh/sam.pub")
   user                = "nabila"
   dbserveradmin       = "mariadbadmin"
   dbuser              = "wikijsdbuser"
