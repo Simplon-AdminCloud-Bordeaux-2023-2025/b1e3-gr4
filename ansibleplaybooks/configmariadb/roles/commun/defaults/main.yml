@@ -3,7 +3,6 @@ vaultname: name-kv-59
 vaultsecretnameuser: wikijsdbuser
 vaultsecretnameadmin: mariadbadmin
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
- 
 hostdb: name-mariadb-server1.mariadb.database.azure.com
 userdb: wikijsdbuser
 admindb: mariadbadmin@name-mariadb-server1
