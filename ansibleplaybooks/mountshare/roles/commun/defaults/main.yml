@@ -1,8 +1,8 @@
 ---
-vaultname: samnab-kv-265
-vaultsecretname: samnabstsmb265-accessKey
+vaultname: name-kv-59
+vaultsecretname: namestsmb59-accessKey
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
 mountpoint: /wikijs
-username: samnabstsmb265
-share_name: samnab-share-wikijs
+username: namestsmb59
+share_name: name-share-wikijs

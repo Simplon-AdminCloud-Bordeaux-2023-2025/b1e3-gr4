@@ -50,14 +50,6 @@ resource "azurerm_key_vault_access_policy" "other_user" {
   ]
 }
 
-#Add
-resource "azurerm_key_vault_secret" "ssh_public_key" {
-  key_vault_id = azurerm_key_vault.keyVault.id
-  name         = "ssh-public"
-  value        = local.ssh_pub_key
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user, azurerm_key_vault_access_policy.other_user]
-}
-
 #Add random generated password for database server administrator to key vault
 resource "azurerm_key_vault_secret" "passworddatabase" {
   key_vault_id = azurerm_key_vault.keyVault.id

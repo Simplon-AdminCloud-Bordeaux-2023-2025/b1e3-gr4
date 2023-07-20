@@ -50,13 +50,13 @@
         groups: sudo
         append: yes
 
-    - name: sudo without password for wheel group
+    - name: sudo without password nabR
       copy:
         content: 'nabR ALL=(ALL:ALL) NOPASSWD:ALL'
         dest: /etc/sudoers.d/nabR
         mode: 0440
 
-    - name: sudo without password for wheel group
+    - name: sudo without password samM
       copy:
         content: 'samM ALL=(ALL:ALL) NOPASSWD:ALL'
         dest: /etc/sudoers.d/samM

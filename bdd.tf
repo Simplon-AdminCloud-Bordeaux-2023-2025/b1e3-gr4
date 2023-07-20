@@ -28,9 +28,9 @@ resource "azurerm_mariadb_database" "database" {
   collation           = "utf8mb4_unicode_520_ci"
 }
 
-#Create db subnet with a delegation to MicrosoftSQL 
+#Create db subnet
 resource "azurerm_subnet" "dbsubnet" {
-  name                                      = "${local.prefixName}-subnet-mariadb"
+  name                                      = "${local.prefixName}-sn-mariadb"
   resource_group_name                       = data.azurerm_resource_group.rg.name
   virtual_network_name                      = azurerm_virtual_network.Vnet.name
   address_prefixes                          = ["10.1.3.0/24"]
@@ -39,22 +39,22 @@ resource "azurerm_subnet" "dbsubnet" {
 }
 
 #Create private dns zone
-resource "azurerm_private_dns_zone" "dnszone" {
+resource "azurerm_private_dns_zone" "dnszonedb" {
   name                = "privatelink.mariadb.database.azure.com"
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
 #Create a link between private dns zone and virtual network
-resource "azurerm_private_dns_zone_virtual_network_link" "vnetlink" {
-  name                  = "${local.prefixName}-dnsvnetlink"
+resource "azurerm_private_dns_zone_virtual_network_link" "vnetlinkdb" {
+  name                  = "${local.prefixName}-dnsvnetlink-db"
   resource_group_name   = data.azurerm_resource_group.rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.dnszone.name
+  private_dns_zone_name = azurerm_private_dns_zone.dnszonedb.name
   virtual_network_id    = azurerm_virtual_network.Vnet.id
 }
 
 #Create endpoint
-resource "azurerm_private_endpoint" "pep" {
-  name                = "${local.prefixName}-pep"
+resource "azurerm_private_endpoint" "pepdb" {
+  name                = "${local.prefixName}-pep-db"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   subnet_id           = azurerm_subnet.Subnet.id
@@ -66,22 +66,22 @@ resource "azurerm_private_endpoint" "pep" {
   }
   private_dns_zone_group {
     name                 = "dns-zone-group"
-    private_dns_zone_ids = [azurerm_private_dns_zone.dnszone.id]
+    private_dns_zone_ids = [azurerm_private_dns_zone.dnszonedb.id]
   }
 }
 
 #Get endpoint connection informations
-data "azurerm_private_endpoint_connection" "private-ip" {
-  name                = azurerm_private_endpoint.pep.name
+data "azurerm_private_endpoint_connection" "private-ip-db" {
+  name                = azurerm_private_endpoint.pepdb.name
   resource_group_name = data.azurerm_resource_group.rg.name
   depends_on          = [azurerm_mariadb_server.dbserver]
 }
 
 #Create private dns record in the private dns zone
-resource "azurerm_private_dns_a_record" "dnsrecord" {
+resource "azurerm_private_dns_a_record" "dnsrecorddb" {
   name                = "${local.prefixName}-privdnsrecdb"
-  zone_name           = azurerm_private_dns_zone.dnszone.name
+  zone_name           = azurerm_private_dns_zone.dnszonedb.name
   resource_group_name = data.azurerm_resource_group.rg.name
   ttl                 = 300
-  records             = [data.azurerm_private_endpoint_connection.private-ip.private_service_connection[0].private_ip_address]
+  records             = [data.azurerm_private_endpoint_connection.private-ip-db.private_service_connection[0].private_ip_address]
 }

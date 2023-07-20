@@ -1,9 +1,9 @@
 ---
-vaultname: samnab-kv-265
+vaultname: name-kv-59
 vaultsecretname: wikijsdbuser
 tenantid: a2e466aa-4f86-4545-b5b8-97da7c8febf3
  
-hostdb: samnab-mariadb-server.mariadb.database.azure.com
-userdb: wikijsdbuser@samnab-mariadb-server
+hostdb: name-mariadb-server1.mariadb.database.azure.com
+userdb: wikijsdbuser@name-mariadb-server1
 dbname: wikijs
-dns: samnab-app.westeurope.cloudapp.azure.com
+dns: name-wikijs.westeurope.cloudapp.azure.com

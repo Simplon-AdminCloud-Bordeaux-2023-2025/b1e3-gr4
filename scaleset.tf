@@ -59,8 +59,7 @@ resource "azurerm_monitor_autoscale_setting" "autoscaleset" {
         time_window        = "PT5M"
         time_aggregation   = "Average"
         operator           = "GreaterThan"
-        threshold          = 75
-        metric_namespace   = "microsoft.compute/virtualmachinescalesets"
+        threshold          = 90
       }
 
       scale_action {

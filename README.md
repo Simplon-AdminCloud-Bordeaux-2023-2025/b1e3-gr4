@@ -16,9 +16,11 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 
 * Commencez par récupérer le dépôt `git clone git@github.com:Simplon-AdminCloud-Bordeaux-2023-2025/b1e3-gr4.git`.
 
-* Dans le fichier network.tf, sur le bloc locals, adaptez les variables à vos informations personnelles.
+* Dans le fichier network.tf, sur le bloc locals et dans le fichier provider.tf, à la ligne 17, adaptez les variables à vos informations personnelles.
 
 * Pour l'ajout d'administrateurs sur les VM, personnalisez le fichier ./ansibleplaybooks/addusers/create-user.yml et ajoutez les clés publiques des nouveaux utilisateurs dans le même dossier.
+
+* Connectez-vous à votre compte Azure avec votre terminal : `az login`
 
 ## Déploiement avec Terraform : ##
 
@@ -26,7 +28,7 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 >
                                               cd b1e3-gr4
 >
-                                            terraform init -upgrade
+                                          terraform init -upgrade
 
 * Etape 2 : Planifiez les ressources à déployer
 >
@@ -40,9 +42,9 @@ Pour exécuter cette installation, il est nécessaire d'avoir un abonnement Azur
 >
                 ansible-playbook -i inventory.ini ./challengeHTTP/roles/runChallenge.yml
 
-* Dans les fichiers gateway.tf et keyvault.tf, décommentez les lignes 106 à 129 et 94 à 125, puis répétez les étapes 2 et 3.
+* Dans les fichiers gateway.tf et keyvault.tf, décommentez les lignes 106 à 129 et 86 à 117, puis répétez les étapes 2 et 3.
 
-## Lancement des playbooks pour l'installation de l'application sur la VM application (depuis le dossier ansibleplaybooks) 
+## Lancement des playbooks pour l'installation de WikiJS sur la VM application (depuis le dossier ansibleplaybooks) 
 >
   `ansible-playbook -i inventory.ini  ./mountshare/roles/mountshare.yml`
 >
