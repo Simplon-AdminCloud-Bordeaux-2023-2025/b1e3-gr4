@@ -201,7 +201,7 @@ Heartbeat | summarize LastHeartbeat = max(TimeGenerated) by Computer |
 where Computer == "${azurerm_linux_virtual_machine.app.name}" | 
 where LastHeartbeat < ago(5m)
 QUERY
-  frequency      = 5
+  frequency      = 10
 
   trigger {
     operator  = "GreaterThan"

@@ -1,3 +1,4 @@
+#Create backup vault
 resource "azurerm_recovery_services_vault" "vault" {
   name                = "${local.prefixName}-tfex-recovery-vault"
   location            = data.azurerm_resource_group.rg.location
@@ -5,7 +6,7 @@ resource "azurerm_recovery_services_vault" "vault" {
   sku                 = "Standard"
 }
 
-
+#Create backup of storage account
 resource "azurerm_backup_container_storage_account" "protection-container" {
   resource_group_name = data.azurerm_resource_group.rg.name
   recovery_vault_name = azurerm_recovery_services_vault.vault.name
@@ -13,6 +14,7 @@ resource "azurerm_backup_container_storage_account" "protection-container" {
 
 }
 
+#Create backup policy for file share
 resource "azurerm_backup_policy_file_share" "backup-policy" {
   name                = "${local.prefixName}-tfex-recovery-vault-policy"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -28,6 +30,7 @@ resource "azurerm_backup_policy_file_share" "backup-policy" {
   }
 }
 
+#Enable backup for file share
 resource "azurerm_backup_protected_file_share" "share1" {
   resource_group_name       = data.azurerm_resource_group.rg.name
   recovery_vault_name       = azurerm_recovery_services_vault.vault.name

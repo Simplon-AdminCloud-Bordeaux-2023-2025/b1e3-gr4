@@ -30,8 +30,8 @@ resource "random_password" "dbpassuser" {
 #Generic variables
 locals {
   ipSpace = ["10.1.0.0/16"]
-  # prefixName          = data.azurerm_resource_group.rg.name
-  prefixName          = "othername"
+  # prefixName          = "sn${data.azurerm_resource_group.rg.name}"
+  prefixName          = "name3"
   path_to_private_key = "~/.ssh/terraform_key"
   ssh_pub_key         = file("~/.ssh/terraform_key.pub")
   user                = "nabila"
@@ -54,7 +54,7 @@ resource "azurerm_virtual_network" "Vnet" {
 # Create VM subnet
 resource "azurerm_subnet" "Subnet" {
   name                                      = "${local.prefixName}-sn-VM"
-  address_prefixes                          = ["10.1.1.0/24"]
+  address_prefixes                          = [cidrsubnet(local.ipSpace[0], 8, 1)]
   resource_group_name                       = data.azurerm_resource_group.rg.name
   virtual_network_name                      = azurerm_virtual_network.Vnet.name
   private_endpoint_network_policies_enabled = "true"

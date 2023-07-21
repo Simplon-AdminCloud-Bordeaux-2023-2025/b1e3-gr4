@@ -75,7 +75,7 @@ resource "azurerm_key_vault_secret" "containerkey" {
 # resource "azurerm_key_vault_certificate" "certificatwikijs" {
 #   name         = "wikicert"
 #   key_vault_id = azurerm_key_vault.keyVault.id
-#   depends_on   = [azurerm_key_vault_access_policy.kvpolicy, azurerm_key_vault_access_policy.other_user]
+#   depends_on   = [azurerm_key_vault_access_policy.kvpolicy]
 #   certificate {
 #     contents = filebase64("./ansibleplaybooks/challengeHTTP/roles/cert.pfx")
 #     password = "challengepassword"

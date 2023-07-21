@@ -32,7 +32,7 @@ resource "azurerm_subnet" "dbsubnet" {
   name                                      = "${local.prefixName}-sn-mariadb"
   resource_group_name                       = data.azurerm_resource_group.rg.name
   virtual_network_name                      = azurerm_virtual_network.Vnet.name
-  address_prefixes                          = ["10.1.3.0/24"]
+  address_prefixes                          = [cidrsubnet(local.ipSpace[0], 8, 3)]
   service_endpoints                         = ["Microsoft.Sql"]
   private_endpoint_network_policies_enabled = "true"
 }

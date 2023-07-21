@@ -1,3 +1,4 @@
+#Create a linux VM scale set of 8 instances
 resource "azurerm_linux_virtual_machine_scale_set" "scaleset" {
   name                = "${local.prefixName}-scst"
   location            = data.azurerm_resource_group.rg.location
@@ -34,7 +35,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "scaleset" {
   }
 }
 
-
+#Create an autoscaling rule
 resource "azurerm_monitor_autoscale_setting" "autoscaleset" {
   name                = "${local.prefixName}-autoscst"
   resource_group_name = data.azurerm_resource_group.rg.name
